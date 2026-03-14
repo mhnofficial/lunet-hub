@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunet Hub — Dashboard</title>
+    <link rel="icon" type="image/png" href="e.ico">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://minnit.chat/js/embed.js?c=1758971289" defer></script>
+
+    <style>
+        :root {
+            --primary: #a855f7;
+            --secondary: #7c3aed;
+            --bg-dark: #09060d;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-border: rgba(255, 255, 255, 0.06);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image:
+                    radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            width: 100%;
+            height: 70px;
+            background: rgba(9, 6, 13, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--surface-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: 1px; }
+
+        .nav-links { list-style: none; display: flex; gap: 8px; }
+        .nav-links a {
+            padding: 8px 16px; color: var(--text-muted);
+            text-decoration: none; border-radius: var(--radius-md);
+            font-size: 0.85rem; font-weight: 500; transition: var(--transition);
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--surface); color: #fff;
+        }
+
+        /* --- Main Layout --- */
+        main {
+            margin-top: 100px;
+            padding: 0 5% 100px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+        }
+
+        #clock {
+            font-size: 0.9rem; font-weight: 600; color: var(--primary);
+            background: var(--surface); padding: 6px 20px;
+            border-radius: 100px; border: 1px solid var(--surface-border);
+        }
+
+        /* --- Bento Cards --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            grid-auto-rows: minmax(180px, auto);
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .active-card { grid-column: span 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .user-count { font-size: 3.5rem; font-weight: 700; line-height: 1; }
+        .user-count span { font-size: 1rem; color: var(--text-muted); font-weight: 400; display: block; margin-top: 5px; }
+
+        .chat-card { grid-column: span 2; grid-row: span 2; padding: 0; display: flex; flex-direction: column; }
+        .chat-container-inner { flex-grow: 1; width: 100%; border-radius: 0 0 var(--radius-lg) var(--radius-lg); overflow: hidden; }
+
+        .quick-actions { grid-column: span 1; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .action-btn {
+            background: var(--surface); border: 1px solid var(--surface-border);
+            border-radius: var(--radius-lg); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-decoration: none;
+            color: var(--text-muted); transition: var(--transition); gap: 10px;
+        }
+        .action-btn i { font-size: 1.4rem; color: var(--primary); }
+        .action-btn:hover { background: #fff; color: #000; }
+
+        /* --- Modern Podium --- */
+        .podium-section {
+            margin-top: 120px;
+            text-align: center;
+            opacity: 0; transform: translateY(40px);
+            transition: all 1s ease;
+        }
+        .podium-section.reveal { opacity: 1; transform: translateY(0); }
+
+        .podium-container {
+            display: flex; justify-content: center; align-items: flex-end;
+            gap: 20px; height: 450px; margin-top: 150px;
+        }
+
+        .pedestal {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            border: 1px solid var(--surface-border);
+            border-bottom: none;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            width: 220px; position: relative;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding-bottom: 30px;
+        }
+
+        .pedestal.gold { height: 100%; border-top: 2px solid #fbbf24; }
+        .pedestal.silver { height: 75%; border-top: 2px solid #94a3b8; }
+        .pedestal.bronze { height: 55%; border-top: 2px solid #b45309; }
+
+        .floating-info {
+            position: absolute; top: -140px; left: 0; width: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            transition: var(--transition);
+        }
+        .floating-info img {
+            width: 85px; height: 85px; border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); margin-bottom: 15px;
+        }
+        .floating-info h4 { font-weight: 600; margin-bottom: 5px; }
+        .floating-info p { font-size: 0.75rem; color: var(--text-muted); max-width: 80%; }
+
+        .rank-tag {
+            font-size: 5rem; font-weight: 800; opacity: 0.03;
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+        }
+
+        @media (max-width: 1024px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .podium-container { scale: 0.8; }
+        }
+        @media (max-width: 768px) {
+            .nav-links span { display: none; }
+            .podium-container { flex-direction: column; height: auto; gap: 160px; align-items: center; margin-top: 180px; }
+            .pedestal { width: 100%; height: 100px !important; border-radius: var(--radius-lg); }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo-area">
+        <img src="e.ico" alt="Lunet" width="32" height="32" style="border-radius: 8px;">
+        <h1>LUNET</h1>
+    </div>
+    <ul class="nav-links">
+        <li><a href="#" class="active">Dashboard</a></li>
+        <li><a href="games.html">Arcade</a></li>
+        <li><a href="ai.html">Timothy AI</a></li>
+        <li><a href="browser.html">Browser</a></li>
+        <li><a href="about.html">About</a></li>
+    </ul>
+</nav>
+
+<main>
+    <header class="header-flex">
+        <div>
+            <h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 5px;">Control Center</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">System status: Operational</p>
+        </div>
+        <div id="clock">00:00:00</div>
+    </header>
+
+    <section class="bento-grid">
+        <div class="card active-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <i class="fa-solid fa-satellite-dish" style="color: var(--primary);"></i>
+                <div style="font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; color: #10b981;">LIVE</div>
+            </div>
+            <div class="user-count" id="real-user-count">--<span>Users active on hub</span></div>
+        </div>
+
+        <div class="card chat-card">
+            <div style="padding: 18px 25px; border-bottom: 1px solid var(--surface-border); display: flex; align-items: center; gap: 10px;">
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary);"></div>
+                <span style="font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;">GLOBAL CHANNEL</span>
+            </div>
+            <div class="chat-container-inner">
+                <span class="minnit-chat-sembed" data-chatname="https://organizations.minnit.chat/692787185692472/c/Main?embed" data-style="width:100%; height:100%; border:none;"></span>
+            </div>
+        </div>
+
+        <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 20px;">
+            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.03); border-radius: 15px; display: grid; place-items: center;">
+                <i class="fa-solid fa-file-signature" style="font-size: 1.5rem; color: var(--text-muted);"></i>
+            </div>
+            <h3>Project Docs</h3>
+            <a href="https://docs.google.com/document/d/1MKGT5ReHRDTzZJyhZc9cC4KAKTp_GNhalLXhBp_rCq0/edit?usp=sharing" target="_blank" style="text-decoration: none; color: var(--primary); font-weight: 600; font-size: 0.9rem;">View Archives →</a>
+        </div>
+
+        <div class="quick-actions">
+            <a href="games.html" class="action-btn"><i class="fa-solid fa-bolt"></i><span>Play</span></a>
+            <a href="tools.html" class="action-btn"><i class="fa-solid fa-layer-group"></i><span>Tools</span></a>
+            <a href="ai.html" class="action-btn"><i class="fa-solid fa-brain"></i><span>AI</span></a>
+            <a href="#" class="action-btn"><i class="fa-solid fa-sliders"></i><span>Config</span></a>
+        </div>
+    </section>
+
+    <section class="podium-section" id="game-podium">
+        <h3 style="font-size: 1.8rem; margin-bottom: 8px;">Hall of Fame</h3>
+        <p style="color: var(--text-muted); margin-bottom: 40px;">Community most played this week</p>
+
+        <div class="podium-container">
+            <div class="pedestal silver">
+                <div class="floating-info">
+                    <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/177.png" alt="Run 3">
+                    <h4>Run 3</h4>
+                    <p>Defy gravity in space.</p>
+                </div>
+                <div class="rank-tag">2</div>
+            </div>
+
+            <div class="pedestal gold">
+                <div class="floating-info">
+                    <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/267.png" alt="Pizza Tower">
+                    <h4>Pizza Tower</h4>
+                    <p>Pure platforming chaos.</p>
+                </div>
+                <div class="rank-tag">1</div>
+            </div>
+
+            <div class="pedestal bronze">
+                <div class="floating-info">
+                    <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/33.png" alt="Retro Bowl">
+                    <h4>Retro Bowl</h4>
+                    <p>Gridiron management.</p>
+                </div>
+                <div class="rank-tag">3</div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    // System Clock
+    setInterval(() => {
+        document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+    }, 1000);
+
+    // Intersection Observer for Podium
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('reveal');
+        });
+    }, { threshold: 0.2 });
+
+    observer.observe(document.getElementById('game-podium'));
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue, push, onDisconnect, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBxUXbhZMajpZH18G-8-_u3Lxcgkd3xQbs",
+        authDomain: "asdf-f3406.firebaseapp.com",
+        projectId: "asdf-f3406",
+        databaseURL: "https://asdf-f3406-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const onlineUsersRef = ref(db, 'online_users');
+    const countDisplay = document.getElementById('real-user-count');
+
+    const myPresenceRef = push(onlineUsersRef);
+    const connectedRef = ref(db, '.info/connected');
+
+    onValue(connectedRef, (snap) => {
+        if (snap.val() === true) {
+            set(myPresenceRef, true);
+            onDisconnect(myPresenceRef).remove();
+        }
+    });
+
+    onValue(onlineUsersRef, (snapshot) => {
+        const count = snapshot.size || 0;
+        if (countDisplay) countDisplay.innerHTML = `${count}<span>Users active on hub</span>`;
+    });
+</script>
+
+</body>
+</html>

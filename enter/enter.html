@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunet Hub — Cinema</title>
+    <link rel="icon" type="image/png" href="../e.ico">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #a855f7;
+            --secondary: #7c3aed;
+            --bg-dark: #09060d;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-border: rgba(255, 255, 255, 0.06);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image:
+                    radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            width: 100%; height: 70px;
+            background: rgba(9, 6, 13, 0.7); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--surface-border);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; position: fixed; top: 0; z-index: 1000;
+        }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; gap: 5px; }
+        .nav-links a {
+            display: flex; align-items: center; gap: 8px; padding: 10px 15px;
+            color: var(--text-muted); text-decoration: none; border-radius: var(--radius-md);
+            font-size: 0.85rem; font-weight: 500; transition: var(--transition);
+        }
+        .nav-links a.active { background: var(--surface); color: #fff; }
+
+        /* --- Main Layout --- */
+        main { margin-top: 100px; padding: 0 5% 100px; }
+
+        .search-section {
+            max-width: 600px; margin: 0 auto 50px; position: relative;
+        }
+        .search-section i {
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 1.1rem;
+        }
+        #movie-search {
+            width: 100%; padding: 18px 20px 18px 55px;
+            background: var(--surface); border: 1px solid var(--surface-border);
+            border-radius: 100px; color: #fff; font-family: inherit; font-size: 1rem;
+            transition: var(--transition); outline: none;
+        }
+        #movie-search:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); }
+
+        /* --- Row Sliders --- */
+        .category-row { margin-bottom: 40px; transition: var(--transition); }
+        .row-header {
+            font-size: 1.4rem; font-weight: 700; margin-bottom: 20px;
+            color: #fff; border-left: 4px solid var(--primary); padding-left: 15px;
+        }
+        .movie-slider {
+            display: flex; gap: 20px; overflow-x: auto;
+            padding-bottom: 25px; scroll-behavior: smooth; scrollbar-width: none;
+        }
+        .movie-slider::-webkit-scrollbar { display: none; }
+
+        .movie-card {
+            flex: 0 0 220px; height: 320px;
+            background: #121212; border: 1px solid var(--surface-border);
+            border-radius: var(--radius-md); text-decoration: none;
+            position: relative; overflow: hidden; transition: var(--transition);
+            display: flex; align-items: flex-end; padding: 20px;
+            background-size: cover; background-position: center;
+        }
+        .movie-card:hover { transform: scale(1.05); border-color: var(--primary); z-index: 10; }
+        .movie-card .title { font-size: 0.85rem; font-weight: 600; color: #fff; z-index: 2; }
+        .movie-card::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+            z-index: 1;
+        }
+
+        #no-results { display: none; text-align: center; padding: 50px; color: var(--text-muted); font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo-area">
+        <img src="e.ico" alt="Lunet" width="32" height="32" style="border-radius: 8px;">
+        <h1>LUNET</h1>
+    </div>
+    <ul class="nav-links">
+        <li><a href="../index.html"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a></li>
+        <li><a href="../games.html"><i class="fa-solid fa-gamepad"></i> <span>Arcade</span></a></li>
+        <li><a href="../ai.html"><i class="fa-solid fa-code"></i> <span>AI</span></a></li>
+        <li><a href="#" class="active"><i class="fa-solid fa-tv"></i> <span>Streaming</span></a></li>
+        <li><a href="../tools.html"><i class="fa-solid fa-toolbox"></i> <span>Utility</span></a></li>
+        <li><a href="../other.html"><i class="fa-solid fa-bell"></i> <span>OS</span></a></li>
+        <li><a href="../about.html"><i class="fa-solid fa-circle"></i> <span>About</span></a></li>
+    </ul>
+</nav>
+
+<main>
+    <section class="search-section">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="movie-search" placeholder="Search the archives...">
+    </section>
+
+    <div id="netflix-rows"></div>
+    <div id="no-results">No matches found.</div>
+</main>
+
+<script>
+    const TMDB_KEY = 'a7e947d1573359d992f763486c434942';
+
+    // Intersection Observer to lazy load posters
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const card = entry.target;
+                const title = card.getAttribute('data-title');
+                loadPoster(card, title);
+                observer.unobserve(card);
+            }
+        });
+    }, { rootMargin: '200px' });
+
+    async function loadPoster(card, title) {
+        try {
+            const query = encodeURIComponent(title.split('(')[0].trim());
+            const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${query}`);
+            const data = await res.json();
+            if (data.results?.[0]?.poster_path) {
+                card.style.backgroundImage = `url('https://image.tmdb.org/t/p/w500${data.results[0].poster_path}')`;
+            }
+        } catch (e) {}
+    }
+
+    async function initCinema() {
+        const container = document.getElementById('netflix-rows');
+        const searchInput = document.getElementById('movie-search');
+
+        try {
+            const response = await fetch('driv.txt');
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            const elements = Array.from(doc.querySelectorAll('span, a'));
+
+            let categories = [];
+            let currentCat = null;
+
+            elements.forEach(el => {
+                const rawText = el.textContent.trim();
+                if (rawText.endsWith(':')) {
+                    currentCat = { name: rawText.replace(':', ''), items: [] };
+                    categories.push(currentCat);
+                } else if (el.tagName === 'A' && currentCat) {
+                    let href = el.getAttribute('href');
+                    if (href.includes('url?q=')) href = decodeURIComponent(href.split('url?q=')[1].split('&')[0]);
+
+                    let cleanName = rawText.replace(/\.(mp4|mkv|mov|avi|wmv|zip|rar)$/i, '').replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+                    currentCat.items.push({ name: cleanName, link: href });
+                }
+            });
+
+            function render(filter = '') {
+                container.innerHTML = '';
+                let visibleCount = 0;
+
+                categories.forEach(cat => {
+                    const filtered = cat.items.filter(i => i.name.toLowerCase().includes(filter.toLowerCase()));
+                    if (filtered.length > 0) {
+                        visibleCount++;
+                        filtered.sort((a, b) => a.name.localeCompare(b.name));
+                        const row = document.createElement('div');
+                        row.className = 'category-row';
+                        row.innerHTML = `
+                            <h3 class="row-header">${cat.name}</h3>
+                            <div class="movie-slider">
+                                ${filtered.map(item => `
+                                    <a href="${item.link}" target="_blank" class="movie-card" data-title="${item.name}">
+                                        <span class="title">${item.name}</span>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        `;
+                        container.appendChild(row);
+                    }
+                });
+
+                // Attach observers to new cards
+                document.querySelectorAll('.movie-card').forEach(card => observer.observe(card));
+                document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+
+            searchInput.addEventListener('input', (e) => render(e.target.value));
+            render();
+
+        } catch (err) {
+            container.innerHTML = `<div style="text-align:center;">Failed to load driv.txt</div>`;
+        }
+    }
+
+    window.onload = initCinema;
+</script>
+
+</body>
+</html>

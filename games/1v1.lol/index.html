@@ -1,0 +1,61 @@
+<html><head>
+    
+    
+      <script async="" src="https://www.googletagmanager.com/gtag/js?id=WLTG1S4STB"></script>
+      <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'WLTG1S4STB');
+      </script>
+      <meta charset="utf-8">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <style></style>
+      <link rel="stylesheet" href="css/style.css">
+      <script src="js/UnityProgress.js"></script>
+      <script src="js/2.7.js"></script>
+      <script type="text/javascript">
+        var gameInstance;
+        window.onload = function() {
+            gameInstance = UnityLoader.instantiate("gameContainer", "https://cdn.jsdelivr.net/gh/n-101-1/1@main/2.7.json", {
+                onProgress: UnityProgress,
+                Module: {
+                    onRuntimeInitialized: function() {
+                        UnityProgress(gameInstance, "complete");
+                    },
+                },
+            });
+        };
+      </script> 
+   </head>
+   <body>
+      <div class="webgl-content">
+         <div id="gameContainer" style="width: 100%; height: 100%; margin: auto;"></div>
+      </div>
+      <script src="js/1firebase-app.js"></script>
+      <script src="js/1firebase-auth.js"></script>
+      <script src="js/1firebase-firestore.js"></script>
+      <script src="js/1firebase.js"></script>
+      <script src="js/1login.js"></script>
+      <script src="js/1firestore.js"></script>
+      <script> 
+        initializeFireBase();
+
+        function showAds() {
+            console.log("show ads");
+        }
+
+        function requestNewAd() {
+            unityAdFinishedCallback();
+        }
+
+        function unityAdFinishedCallback() {
+            try {
+                if (gameInstance) gameInstance.SendMessage("AdsManager", "OnWebCallback");
+            } catch (error) {
+                console.log(error);
+            }
+        }
+      </script> 
+   
+</body></html>

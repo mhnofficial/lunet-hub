@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunet Hub — Arcade</title>
+    <link rel="icon" type="image/png" href="e.ico">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #a855f7;
+            --secondary: #7c3aed;
+            --bg-dark: #09060d;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-border: rgba(255, 255, 255, 0.06);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image:
+                    radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            width: 100%;
+            height: 70px;
+            background: rgba(9, 6, 13, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--surface-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; color: #fff; }
+
+        .nav-links { list-style: none; display: flex; gap: 5px; }
+        .nav-links a {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 15px; color: var(--text-muted);
+            text-decoration: none; border-radius: var(--radius-md);
+            font-size: 0.85rem; font-weight: 500; transition: var(--transition);
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--surface); color: #fff;
+        }
+
+        /* --- Main Content --- */
+        main {
+            margin-top: 100px;
+            padding: 0 5% 100px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        header { margin-bottom: 40px; }
+        header h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+        header p { color: var(--text-muted); font-size: 0.95rem; max-width: 700px; }
+        header a { color: var(--primary); text-decoration: none; font-weight: 600; }
+
+        /* --- Search Bar --- */
+        .search-container {
+            margin-bottom: 50px;
+            position: relative;
+            max-width: 500px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 16px 24px 16px 52px;
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-md);
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);
+        }
+
+        .search-icon {
+            position: absolute; left: 22px; top: 50%;
+            transform: translateY(-50%); color: var(--text-muted); font-size: 1rem;
+        }
+
+        /* --- Game Grid --- */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 24px;
+        }
+
+        .game-card {
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            display: flex; flex-direction: column;
+            align-items: center; text-align: center;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-image {
+            width: 100%; aspect-ratio: 1/1; object-fit: cover;
+            border-radius: var(--radius-md); margin-bottom: 15px;
+            background: #000;
+        }
+
+        .card-title {
+            font-size: 0.85rem; font-weight: 600; color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        #noResultsMessage {
+            grid-column: 1 / -1; text-align: center; padding: 60px;
+            font-size: 1rem; color: var(--text-muted); font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links span { display: none; }
+            .game-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo-area">
+        <img src="e.ico" alt="Lunet" width="32" height="32" style="border-radius: 8px;">
+        <h1>LUNET</h1>
+    </div>
+    <ul class="nav-links">
+        <li><a href="index.html"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a></li>
+        <li><a href="#" class="active"><i class="fa-solid fa-gamepad"></i> <span>Arcade</span></a></li>
+        <li><a href="ai.html"><i class="fa-solid fa-code"></i> <span>AI</span></a></li>
+        <li><a href="enter/enter.html"><i class="fa-solid fa-tv"></i> <span>Streaming</span></a></li>
+        <li><a href="about.html"><i class="fa-solid fa-circle"></i> <span>About</span></a></li>
+    </ul>
+</nav>
+
+<main>
+    <header>
+        <h2>Arcade Library</h2>
+        <p>Access our curated collection of unblocked titles. Looking for more? Visit the <a href="https://old.reddit.com/r/Piracy/wiki/megathread" target="_blank">Megathread →</a></p>
+    </header>
+
+    <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Search for a game...">
+    </div>
+
+    <div class="game-grid" id="gameGrid"> <!-- All your game links go here --> <a href="games/1v1.lol/index.html" class="game-card"> <div class="card-content"> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP37bqA3jBETPuq1TTf5UhGyo6oNFJkF2-cw&s" class="card-image"> <h3 class="card-title">1v1</h3> </div> </a> <a href="games/aswc/index.html" class="game-card"> <div class="card-content"> <img src="https://play-lh.googleusercontent.com/R47kNu-wEYMVnoo7rFOXiAHoBvW26KHps65Oi0S6zMF722x0LYqHJUiXRvB_xhsj0CM" class="card-image"> <h3 class="card-title">ASWC</h3> </div> </a> <a href="games/adofai/index.html" class="game-card"> <div class="card-content"> <img src="https://pbs.twimg.com/profile_images/1316068262845710336/3obYu4Lq_400x400.jpg" class="card-image"> <h3 class="card-title">ADOFAI</h3> </div> </a> <a href="games/amanda1/index.html" class="game-card"> <div class="card-content"> <img src="https://upload.wikimedia.org/wikipedia/en/a/aa/Amanda_the_Adventurer_logo.png" class="card-image"> <h3 class="card-title">Amanda the Adventurer</h3> </div> </a> <a href="games/angry birds/index.html" class="game-card"> <div class="card-content"> <img src="https://i.redd.it/zsqypesy6drf1.png" class="card-image"> <h3 class="card-title">Angry Birds</h3> </div> </a> <a href="games/badli]/index.html" class="game-card"> <div class="card-content"> <img src="https://cdn-0001.qstv.on.epicgames.com/HfSzVVvXGwMDNPGOdB/image/landscape_comp.jpeg" class="card-image"> <h3 class="card-title">Bad Parenting</h3> </div> </a> <a href="games/baldis/index.html" class="game-card"> <div class="card-content"> <img src="https://images.steamusercontent.com/ugc/910169477139258394/36AA90A4B1E22669E1500FF8D31DDFDD670745CC/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false" class="card-image"> <h3 class="card-title">Baldi's Basics</h3> </div> </a> <a href="games/bb bros/index.html" class="game-card"> <div class="card-content"> <img src="https://baseballbrosonline.com/baseball_bros.webp" class="card-image"> <h3 class="card-title">Baseball Bros</h3> </div> </a> <a href="games/Basket Random.html" class="game-card"> <div class="card-content"> <img src="https://imgs.crazygames.com/basket-random_1x1/20240617090207/basket-random_1x1-cover?format=auto&quality=100&metadata=none&width=1200" class="card-image"> <h3 class="card-title">Basket Random</h3> </div> </a> <a href="games/Bendy and the Ink Machine.html" class="game-card"> <div class="card-content"> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbpbkNjvZBueAv4k3aOJDEVVFbV0ZnQj1RwHQx3SmYHUoSQDpVusONYtTnzyyrcuxo6Fkz&s=10" class="card-image"> <h3 class="card-title">Bendy and The Ink Machine</h3> </div> </a> <a href="games/BLOODMONEY!.html" class="game-card"> <div class="card-content"> <img src="https://i.redd.it/vhvju84phiif1.png" class="card-image"> <h3 class="card-title">Bloodmoney</h3> </div> </a> <a href="games/blovkblast/index.html" class="game-card"> <div class="card-content"> <img src="https://imgs.crazygames.com/block-puzzle-master_1x1/20250924025352/block-puzzle-master_1x1-cover?format=auto&quality=100&metadata=none&width=1200" class="card-image"> <h3 class="card-title">Block Blast</h3> </div> </a> <a href="games/cookie-clicker/index.html" class="game-card"> <div class="card-content"> <img src="https://super142.wordpress.com/wp-content/uploads/2022/07/cookie-clicker.jpg" class="card-image"> <h3 class="card-title">Cookie Clicker</h3> </div> </a> <a href="games/cc3d.html" class="game-card"> <div class="card-content"> <img src="games/cc3d/images/index.icon.png" class="card-image"> <h3 class="card-title">CC3D</h3> </div> </a> <a href="games/cuphead/index.html" class="game-card"> <div class="card-content"> <img src="https://image.api.playstation.com/vulcan/img/cfn/11307fllh6D-IvbpCa18N0vRggVeRYWA06paTNCj3DENJMScAzW2f3ry4IwFcXBAt9kWXdZGpGoOGjxJ_e9MdordMVAosNhZ.png" class="card-image"> <h3 class="card-title">Cuphead</h3> </div> </a> <a href="games/gn-math/index.html" class="game-card"> <div class="card-content"> <img src="games/gn-math/images/favicon.png" class="card-image"> <h3 class="card-title">GN-Math</h3> </div> </a> <a href="games/Bouncemasters.html" class="game-card"> <div class="card-content"> <img src="https://play-lh.googleusercontent.com/hGwv7XpClKfQymkNBkVS1TJAdA_--xAWrJWOrSG6CgRd4iyiYFckb7xg9pkOY4cz5d5y" class="card-image"> <h3 class="card-title">Bouncemasters</h3> </div> </a> <a href="games/Candy Crush.html" class="game-card"> <div class="card-content"> <img src="https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI" class="card-image"> <h3 class="card-title">Candy Crush</h3> </div> </a> <a href="games/Crazy Cars.html" class="game-card"> <div class="card-content"> <img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/2bc8004fcbb4387908a636e2a9d9ab4a/crazy-cars.png" class="card-image"> <h3 class="card-title">Crazy Cars</h3> </div> </a> <a href="games/Doodle Jump.html" class="game-card"> <div class="card-content"> <img src="https://play-lh.googleusercontent.com/aHnvdFTx0LVyfVHQLX51VcWBYkSVGvggr4FvIiP-iwBu4pKBiOQA1OnRi_nyFdCWqlU8" class="card-image"> <h3 class="card-title">Doodle Jump</h3> </div> </a> <a href="games/DOOM(1).html" class="game-card"> <div class="card-content"> <img src="https://assets.nintendo.com/image/fetch/q_auto/f_auto/https://atum-img-lp1.cdn.nintendo.net/i/c/e378ddf3af8346cc944f3d4a6ea3d61c_1024" class="card-image"> <h3 class="card-title">DOOM</h3> </div> </a> <a href="games/Doom 2.html" class="game-card"> <div class="card-content"> <img src="https://i.ytimg.com/vi/tvyooQJj8Mk/maxresdefault.jpg" class="card-image"> <h3 class="card-title">DOOM 2</h3> </div> </a> <a href="games/Blumgi Rocket.html" class="game-card"> <div class="card-content"> <img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/672fb98802b00740e3c885cb2b31fc51/blumgi-rocket.png" class="card-image"> <h3 class="card-title">Blumgi Rocket</h3> </div> </a> <a href="games/Dreadhead Parkour.html" class="game-card"> <div class="card-content"> <img src="https://play-lh.googleusercontent.com/5HX-jzTrtP-J8uu6TiX4FF0JWpJjae50a3QvswgfbKc3GiHEalWzm4b846GpiB4Hx22L" class="card-image"> <h3 class="card-title">Dreadhead Parkour</h3> </div> </a> <a href="games/Drift Boss.html" class="game-card"> <div class="card-content"> <img src="https://play-lh.googleusercontent.com/lBaKCuedXV0RCdd0eHM6ttjUSKPNPeuG-DLfC6YzO64vk2WXacZebuRc-s2lKvxYLcAwcbQD3nGAQRII7SarBw" class="card-image"> <h3 class="card-title">Drift Boss</h3> </div> </a> <a href="games/Drive Mad.html" class="game-card"> <div class="card-content"> <img src="https://drivemadgame.cc/uploads/games/main/img_68c3e328e0294.jpg" class="card-image"> <h3 class="card-title">Drive Mad</h3> </div> </a> <a href="games/Elastic Man.html" class="game-card"> <div class="card-content"> <img src="https://www.bestgames.com/thumb/Elastic-Man.jpg" class="card-image"> <h3 class="card-title">Elastic Man</h3> </div> </a> <a href="games/Five Nights at Freddy's 1.html" class="game-card"> <div class="card-content"> <img src="https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA18362_00/1/i_cd6a177c374f229f9cd8e1164a78d49f78af97820747d480daf8cdd3e965c248/i/icon0.png" class="card-image"> <h3 class="card-title">FNAF 1</h3> </div> </a> <a href="games/Five Nights at Freddy's 2.html" class="game-card"> <div class="card-content"> <img src="https://img.utdstc.com/icon/56a/291/56a2911e3cacd6011fedd1c44fce5b22b5db4e4e3abe855c3d6da2fe67637a18:200" class="card-image"> <h3 class="card-title">FNAF 2</h3> </div> </a> <a href="games/Five Nights at Freddy's 3.html" class="game-card"> <div class="card-content"> <img src="https://play-lh.googleusercontent.com/A9kng-j9BLaA2dhRGsPExmjy9E4vfG-GHefvmyywT0J67ZEPGONIsFYlIokL5EUNfiHF=w600-h300-pc0xffffff-pd" class="card-image"> <h3 class="card-title">FNAF 3</h3> </div> </a> <a href="games/Five Nights at Freddy's 4.html" class="game-card"> <div class="card-content"> <img src="https://cdn.now.gg/apps-content/com.nowgg.h5.pub501.app51770/icon/five-nights-at-freddy-s-4.png" class="card-image"> <h3 class="card-title">FNAF 4</h3> </div> </a> <a href="games/Five Nights at Freddy's_ Sister Location.html" class="game-card"> <div class="card-content"> <img src="https://play-lh.googleusercontent.com/u9wx5aNNV6Yn4sJpi7uPBiElRnfAp1zUrn8Xqb4Dx_WBoOPHlB6G6gaYLI-mEXyABPnz" class="card-image"> <h3 class="card-title">FNAF Sister Location</h3> </div> </a> <a href="games/Five Nights at Freddy's_ Ultimate Custom Night.html" class="game-card"> <div class="card-content"> <img src="https://images.steamusercontent.com/ugc/2017088992300934337/10857B77320B0A18AACE91892F4BAC5B0AF94024/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true" class="card-image"> <h3 class="card-title">FNAF UCN</h3> </div> </a> <a href="games/Flappy Bird.html" class="game-card"> <div class="card-content"> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjotfnSFiJQTfHB3VVMCgN0QkWqqRSVYOGYw&s" class="card-image"> <h3 class="card-title">Flappy Bird</h3> </div> </a> <a href="games/Going Balls.html" class="game-card"> <div class="card-content"> <img src="https://downloadr2.apkmirror.com/wp-content/uploads/2025/03/39/67eece99d181b_com.pronetis.ironball2.png" class="card-image"> <h3 class="card-title">Going Balls</h3> </div> </a> <a href="games/Granny.html" class="game-card"> <div class="card-content"> <img src="data:image/jpeg;base64,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" class="card-image"> <h3 class="card-title">Granny</h3> </div> </a> <a href="https://app.mediafire.com/folder/nanu7js8d9jme" class="game-card"> <div class="card-content"> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCfEr00w5gEpIPQIlcldLn3z7_Yeirx-ZvCA&s" class="card-image"> <h3 class="card-title">Flash ROMs</h3> </div> </a> <a href="games/Big Tower Tiny Square.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/67.png" class="card-image"> <h3 class="card-title">Big Tower Tiny Square</h3> </div> </a> <a href="games/Big Tower Tiny Square 2.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/170.png" class="card-image"> <h3 class="card-title">Big Tower Tiny Square 2</h3> </div> </a> <a href="games/Bowmasters.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/0.png" class="card-image"> <h3 class="card-title">Bowmasters</h3> </div> </a> <a href="games/Brawl Guys.io.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/121.png" class="card-image"> <h3 class="card-title">Brawl Guys.io</h3> </div> </a> <a href="games/Buckshot Roulette.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/205.png" class="card-image"> <h3 class="card-title">Buckshot Roulette</h3> </div> </a> <a href="games/BuildNow.gg.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/581.png" class="card-image"> <h3 class="card-title">BuildNow.gg</h3> </div> </a> <a href="games/Burrito Bison.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/78.png" class="card-image"> <h3 class="card-title">Burrito Bison</h3> </div> </a> <a href="games/Celeste(1).html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/623.png" class="card-image"> <h3 class="card-title">Celeste</h3> </div> </a> <a href="games/CG FC 25.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/563.png" class="card-image"> <h3 class="card-title">CG FC 25</h3> </div> </a> <a href="games/Class of '09.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/259.png" class="card-image"> <h3 class="card-title">Class of '09</h3> </div> </a> <a href="games/Cluster Rush.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/81.png" class="card-image"> <h3 class="card-title">Cluster Rush</h3> </div> </a> <a href="games/Cut the Rope.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/85.png" class="card-image"> <h3 class="card-title">Cut the Rope</h3> </div> </a> <a href="games/Half Life.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/262.png" class="card-image"> <h3 class="card-title">Half Life</h3> </div> </a> <a href="games/Happy Wheels.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/624.png" class="card-image"> <h3 class="card-title">Happy Wheels</h3> </div> </a> <a href="games/Harvest.io.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/156.png" class="card-image"> <h3 class="card-title">Harvest.io</h3> </div> </a> <a href="games/Highway Racer.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/567.png" class="card-image"> <h3 class="card-title">Highway Racer</h3> </div> </a> <a href="games/Hypper Sandbox.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/551.png" class="card-image"> <h3 class="card-title">Hypper Sandbox</h3> </div> </a> <a href="games/Jetpack Joyride.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/7.png" class="card-image"> <h3 class="card-title">Jetpack Joyride</h3> </div> </a> <a href="games/Johnny Trigger.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/93.png" class="card-image"> <h3 class="card-title">Johnny Trigger</h3> </div> </a> <a href="games/Karlson.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/542.png" class="card-image"> <h3 class="card-title">Karlson</h3> </div> </a> <a href="games/lvldevil/index.html" class="game-card"> <div class="card-content"> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6Ve8s-CADkXUE6h9WAncDkNhZbhdzjgLU_Q&s" class="card-image"> <h3 class="card-title">Level Devil</h3> </div> </a> <a href="games/little alchemy/index.html" class="game-card"> <div class="card-content"> <img src="https://assets-prd.ignimgs.com/2022/08/15/little-academy-mobile-1660600636606.png" class="card-image"> <h3 class="card-title">Little Alchemy</h3> </div> </a> <a href="games/Madalin Stunt Cars 2.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/278.png" class="card-image"> <h3 class="card-title">Madalin Stunt Cars 2</h3> </div> </a> <a href="games/Madalin Stunt Cars 3.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/279.png" class="card-image"> <h3 class="card-title">Madalin Stunt Cars 3</h3> </div> </a> <a href="games/Magic Tiles 3.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/17.png" class="card-image"> <h3 class="card-title">Magic Tiles 3</h3> </div> </a> <a href="games/Melon Playground.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/172.png" class="card-image"> <h3 class="card-title">Melon Playground</h3> </div> </a> <a href="games/Minecraft 1.8.8.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/181.png" class="card-image"> <h3 class="card-title">Minecraft 1.8.8</h3> </div> </a> <a href="games/Moto X3M.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/96.png" class="card-image"> <h3 class="card-title">Moto X3M</h3> </div> </a> <a href="games/Metal Gear Solid.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/599.png" class="card-image"> <h3 class="card-title">Metal Gear Solid</h3> </div> </a> <a href="games/n-gon.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/180.png" class="card-image"> <h3 class="card-title">n-gon</h3> </div> </a> <a href="games/Nazi Zombies_ Portable.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/308.png" class="card-image"> <h3 class="card-title">Nazi Zombies Portable</h3> </div> </a> <a href="games/OMORI.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/427.png" class="card-image"> <h3 class="card-title">OMORI</h3> </div> </a> <a href="games/Oneshot (LEGACY).html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/622.png" class="card-image"> <h3 class="card-title">Oneshot (LEGACY)</h3> </div> </a> <a href="games/OvO.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/1.png" class="card-image"> <h3 class="card-title">OVO</h3> </div> </a> <a href="games/osu!.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/130.png" class="card-image"> <h3 class="card-title">osu!</h3> </div> </a> <a href="games/Papa's Bakeria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/218.png" class="card-image"> <h3 class="card-title">Papa's Bakeria</h3> </div> </a> <a href="games/Papa's Burgeria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/219.png" class="card-image"> <h3 class="card-title">Papa's Burgeria</h3> </div> </a> <a href="games/Papa's Cheeseria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/220.png" class="card-image"> <h3 class="card-title">Papa's Cheeseria</h3> </div> </a> <a href="games/Papa's Cupcakeria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/221.png" class="card-image"> <h3 class="card-title">Papa's Cupcakeria</h3> </div> </a> <a href="games/Papa's Donuteria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/222.png" class="card-image"> <h3 class="card-title">Papa's Donuteria</h3> </div> </a> <a href="games/Papa's Freezeria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/223.png" class="card-image"> <h3 class="card-title">Papa's Freezeria</h3> </div> </a> <a href="games/Papa's Hot Doggeria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/224.png" class="card-image"> <h3 class="card-title">Papa's Hot Doggeria</h3> </div> </a> <a href="games/Papa's Pancakeria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/225.png" class="card-image"> <h3 class="card-title">Papa's Pancakeria</h3> </div> </a> <a href="games/Papa's Pastaria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/226.png" class="card-image"> <h3 class="card-title">Papa's Pastaria</h3> </div> </a> <a href="games/Papa's Pizeria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/227.png" class="card-image"> <h3 class="card-title">Papa's Pizeria</h3> </div> </a> <a href="games/Papa's Scooperia.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/228.png" class="card-image"> <h3 class="card-title">Papa's Scooperia</h3> </div> </a> <a href="games/Papa's Sushiria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/229.png" class="card-image"> <h3 class="card-title">Papa's Sushiria</h3> </div> </a> <a href="games/Papa's Taco Mia.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/230.png" class="card-image"> <h3 class="card-title">Papa's Taco Mia</h3> </div> </a> <a href="games/Papa's Wingeria.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/231.png" class="card-image"> <h3 class="card-title">Papa's Wingeria</h3> </div> </a> <a href="games/Paper.io 2.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/102.png" class="card-image"> <h3 class="card-title">Paper.io 2</h3> </div> </a> <a href="games/Parappa The Rapper.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/524.png" class="card-image"> <h3 class="card-title">Parappa The Rapper</h3> </div> </a> <a href="games/People Playground.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/194.png" class="card-image"> <h3 class="card-title">People Playground</h3> </div> </a> <a href="games/Hollow Knight(1).html" class="game-card"> <div class="card-content"> <img src="https://images.squarespace-cdn.com/content/v1/606d159a953867291018f801/1619987722169-VV6ZASHHZNRBJW9X0PLK/Key_Art_02_layeredjpg.jpg?format=1500w" class="card-image"> <h3 class="card-title">Hollow Knight (FINALLY WORKING)</h3> </div> </a> <a href="games/Pizza Tower.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/267.png" class="card-image"> <h3 class="card-title">Pizza Tower</h3> </div> </a> <a href="games/Plants vs Zombies.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/232.png" class="card-image"> <h3 class="card-title">Plants vs Zombies</h3> </div> </a> <a href="games/Pou.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/23.png" class="card-image"> <h3 class="card-title">Pou</h3> </div> </a> <a href="games/Quake III Arena.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/263.png" class="card-image"> <h3 class="card-title">Quake III Arena</h3> </div> </a> <a href="games/R.E.P.O.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/195.png" class="card-image"> <h3 class="card-title">R.E.P.O</h3> </div> </a> <a href="games/Raft.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/457.png" class="card-image"> <h3 class="card-title">Raft</h3> </div> </a> <a href="games/Ragdoll Archers.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/186.png" class="card-image"> <h3 class="card-title">Ragdoll Archers</h3> </div> </a> <a href="games/Ragdoll Hit.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/44.png" class="card-image"> <h3 class="card-title">Ragdoll Hit</h3> </div> </a> <a href="games/Rainbow Obby.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/307.png" class="card-image"> <h3 class="card-title">Rainbow Obby</h3> </div> </a> <a href="games/Red Ball 4.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/242.png" class="card-image"> <h3 class="card-title">Red Ball 4 Vol.1</h3> </div> </a> <a href="games/Red Ball 4 Vol. 2.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/243.png" class="card-image"> <h3 class="card-title">Red Ball 4 Vol.2</h3> </div> </a> <a href="games/Red Ball 4 Vol. 3.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/244.png" class="card-image"> <h3 class="card-title">Red Ball 4 Vol.3</h3> </div> </a> <a href="games/Retro Bowl.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/33.png" class="card-image"> <h3 class="card-title">Retro Bowl</h3> </div> </a> <a href="games/Riddle School.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/287.png" class="card-image"> <h3 class="card-title">Riddle School 1</h3> </div> </a> <a href="games/Riddle School 2.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/288.png" class="card-image"> <h3 class="card-title">Riddle School 2</h3> </div> </a> <a href="games/Riddle School 3.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/289.png" class="card-image"> <h3 class="card-title">Riddle School 3</h3> </div> </a> <a href="games/Riddle School 4.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/290.png" class="card-image"> <h3 class="card-title">Riddle School 4</h3> </div> </a> <a href="games/Riddle School 5.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/291.png" class="card-image"> <h3 class="card-title">Riddle School 5</h3> </div> </a> <a href="games/Rolly Vortex.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/208.png" class="card-image"> <h3 class="card-title">Rolly Vortex</h3> </div> </a> <a href="games/Rooftop Snipers.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/283.png" class="card-image"> <h3 class="card-title">Rooftop Snipers</h3> </div> </a> <a href="games/Ruffle.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/113.png" class="card-image"> <h3 class="card-title">Ruffle</h3> </div> </a> <a href="games/Run 3.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/177.png" class="card-image"> <h3 class="card-title">Run 3</h3> </div> </a> <a href="games/Sandboxels.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/309.png" class="card-image"> <h3 class="card-title">Sandboxels</h3> </div> </a> <a href="games/sandstone(1).html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/469.png" class="card-image"> <h3 class="card-title">sandstone</h3> </div> </a> <a href="games/Schoolboy Runaway.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/605.png" class="card-image"> <h3 class="card-title">Schoolboy Runaway</h3> </div> </a> <a href="games/Schoolboy Runaway.html" class="game-card"> <div class="card-content"> <img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/605.png" class="card-image"> <h3 class="card-title">Schoolboy Runaway</h3> </div> </a> <a href="games/Danganronpa.html" class="game-card"> <div class="card-content"> <img src="https://cdn2.steamgriddb.com/icon/ced556cd9f9c0c8315cfbe0744a3baf0/32/256x256.png" class="card-image"> <h3 class="card-title">Danganronpa</h3> </div> </a>
+
+    <p id="noResultsMessage" style="display: none;"></p>
+</main>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const gameGrid = document.getElementById('gameGrid');
+    const noResultsMessage = document.getElementById('noResultsMessage');
+
+    const funnyMessages = ["i think u misspelled that lol", "404: game not found", "probably not here", "lmao nah", "u made that one up 😭"];
+
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        const cards = document.querySelectorAll('.game-card');
+        let found = false;
+
+        cards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            if (title.includes(query)) {
+                card.style.display = 'flex';
+                found = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        if (!found && query.trim() !== '') {
+            noResultsMessage.textContent = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+            noResultsMessage.style.display = 'block';
+        } else {
+            noResultsMessage.style.display = 'none';
+        }
+    });
+
+    function sortGames() {
+        const cards = Array.from(document.querySelectorAll('.game-card'));
+        cards.sort((a, b) => {
+            const titleA = a.querySelector('.card-title').textContent.toLowerCase();
+            const titleB = b.querySelector('.card-title').textContent.toLowerCase();
+            return titleA.localeCompare(titleB);
+        });
+        cards.forEach(card => gameGrid.appendChild(card));
+    }
+
+    window.onload = sortGames;
+</script>
+</body>
+</html>

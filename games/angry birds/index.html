@@ -1,0 +1,24 @@
+<html><head>
+<meta charset="utf-8"><link rel="stylesheet" href="css/style.css">
+<script src="js/UnityProgress.js"></script>
+<script src="js/birds.js"></script>
+<script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "https://cdn.jsdelivr.net/gh/gertdoro/UnityExplorer@cffa09e09790018403c996d37adb6c4450e8f6c6/Runtime/birds/birds.json", {
+        onProgress: UnityProgress,
+        Module: {
+            onRuntimeInitialized: function () {
+                UnityProgress(gameInstance, "complete")
+            }
+        }
+    });
+</script>
+</head><body><div class="webgl-content">
+    <div id="gameContainer" style="width: 100vw; height: 100vh"></div>
+</div>
+      <script async="" src="https://www.googletagmanager.com/gtag/js?id=WLTG1S4STB"></script>
+      <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'WLTG1S4STB');
+      </script></body></html>

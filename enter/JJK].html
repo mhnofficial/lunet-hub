@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunet Hub — Jujutsu Kaisen</title>
+    <link rel="icon" type="image/png" href="e.ico">
+    
+    <!-- Modern Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #9d50bb;
+            --secondary: #6e48aa;
+            --bg-dark: #090412;
+            --surface: #150d26;
+            --surface-hover: #1e1238;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent-glow: rgba(157, 80, 187, 0.3);
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 280px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(110, 72, 170, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(157, 80, 187, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* --- Sidebar Navigation (Universal) --- */
+        nav {
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex; flex-direction: column;
+            padding: 40px 24px; height: 100vh;
+            position: fixed; left: 0; top: 0; z-index: 100;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 14px; margin-bottom: 50px; padding: 0 10px; }
+        .logo-area img { width: 42px; height: 42px; border-radius: 12px; box-shadow: 0 0 15px var(--accent-glow); }
+        .logo-area h1 { font-size: 1.5rem; font-weight: 700; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .nav-links a { display: flex; align-items: center; gap: 14px; padding: 16px 20px; color: var(--text-muted); text-decoration: none; border-radius: var(--radius-md); transition: var(--transition); font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { background: var(--surface-hover); color: #fff; transform: translateX(5px); }
+        .nav-links a i { font-size: 1.2rem; width: 24px; }
+        .nav-links a.active i { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+
+        /* --- Main Player Layout --- */
+        main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 60px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 40px;
+        }
+
+        .player-header { grid-column: 1 / -1; margin-bottom: 20px; }
+        .player-header h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; }
+        .player-header p { color: var(--text-muted); }
+
+        /* Video Container */
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            aspect-ratio: 16 / 9;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* --- Episode & Season Sidebar --- */
+        .episode-panel {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: fit-content;
+            max-height: 80vh;
+        }
+
+        /* Season Dropdown */
+        .season-select-wrapper { position: relative; }
+        #seasonSelect {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-dark);
+            border: 1px solid var(--primary);
+            color: #fff;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            appearance: none;
+            outline: none;
+        }
+
+        .season-select-wrapper::after {
+            content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+            color: var(--primary); pointer-events: none;
+        }
+
+        /* Episode List Scroll */
+        .episode-scroll {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .episode-scroll::-webkit-scrollbar { width: 5px; }
+        .episode-scroll::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .episode-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            padding: 14px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-align: left;
+            font-family: inherit;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .episode-btn:hover {
+            background: var(--surface-hover);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .episode-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .episode-btn i { font-size: 0.8rem; opacity: 0.6; }
+
+        /* Mobile */
+        @media (max-width: 1200px) {
+            main { grid-template-columns: 1fr; margin-left: 80px; padding: 30px; }
+            nav { width: 80px; padding: 30px 10px; }
+            nav h1, nav span { display: none; }
+            .episode-panel { max-height: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav>
+        <div class="logo-area">
+            <img src="../e.ico" alt="Lunet">
+            <h1>Lunet</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a></li>
+            <li><a href="../games.html"><i class="fa-solid fa-gamepad"></i> <span>Arcade</span></a></li>
+            <li><a href="../ai.html"><i class="fa-solid fa-code"></i> <span>Timothy AI</span></a></li>
+            <li><a href="enter.html"><i class="fa-solid fa-tv"></i> <span>Streaming</span></a></li>
+            <li><a href="../tools.html"><i class="fa-solid fa-toolbox"></i> <span>Utility</span></a></li>
+            <li><a href="../other.html"><i class="fa-solid fa-bell"></i> <span>OS</span></a></li>
+            <li><a href="../about.html"><i class="fa-solid fa-circle"></i> <span>About</span></a></li>
+        </ul>
+        <div style="margin-top: auto; text-align: center;">
+            <p style="font-size: 0.7rem; color: var(--text-muted);">© 2025 Lunet</p>
+        </div>
+    </nav>
+
+    <main>
+        <div class="player-header">
+            <h2>Jujutsu Kaisen</h2>
+            <p>Season 1 & 2 • High Definition Streaming</p>
+        </div>
+
+        <!-- Video Display -->
+        <div class="video-container">
+            <iframe id="videoFrame"
+                src="https://drive.google.com/file/d/1sL97POXWjGwcUTpz6k6v53GZekim3ZYC/preview"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <!-- Episode Panel -->
+        <div class="episode-panel">
+            <div class="season-select-wrapper">
+                <select id="seasonSelect" onchange="switchSeason()">
+                    <option value="season1">Season 1: Cursed Child</option>
+                    <option value="season2">Season 2: Shibuya Incident</option>
+                </select>
+            </div>
+
+            <div class="episode-scroll">
+                <!-- Season 1 Episodes -->
+                <div id="season1" class="season-container">
+                    <button class="episode-btn active" onclick="switchEpisode(this, '1sL97POXWjGwcUTpz6k6v53GZekim3ZYC')">Episode 1 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '15N8U6H4F3OnL8X4ilcAE4a3LVi9Ybc9y')">Episode 2 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1oB5caWvmitWLcpTZsNT5MWA8zsJjBkhu')">Episode 3 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1JT0NOMNAbHJhxbhSJSusVXILlMrjvQQj')">Episode 4 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '19fP0nH54ViiGTkygEPunShtWlla7qP4x')">Episode 5 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1bET8WCuppN0MkyYTU3j0LCaSY1Mct1Lk')">Episode 6 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, 'ba1cxaxOw77THpFyrAmBbsTiw6gqnDRC')">Episode 7 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1Z2Vl209fjp69Q-7NLtha6IZCm1YXnXc4')">Episode 8 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1MuHJd5uzoHx9HZn6y-dzrLS8en4yhzlj')">Episode 9 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1peWeeFZKA1lhulhkwGQcjAAtlSAuLq0v')">Episode 10 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1YU54QOMaFYBMV_P1EXXs9N8sg1nO2CEK')">Episode 11 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1rtbcaezTb7tvRhX-tKZip1RAR76CG9hY')">Episode 12 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1rrcmzVuICQX5HHlWjd3gyFJbZuu5or8f')">Episode 13 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1GV1r2Igl8J55vjt7q8TtzpN_sxpdbe8g')">Episode 14 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1vy8n_sEl_SVYTk2n9Dc5Kdkh2W_L7p-0')">Episode 15 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '10fevPRmmAFSLEYbpt8-84OxOCQ636ekD')">Episode 16 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1zpuUh392mKn95O0Z6erMr9LXhFoDg6rV')">Episode 17 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1DoZqujqah5tX4mMzbtPottT7AOkfuyoH')">Episode 18 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1P1zvMn7VbFzRby1mp5zZYOVOGq4MzBIQ')">Episode 19 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1UvteEa7T1Gmc7UNGBmlJeRlFMPKCs6Wg')">Episode 20 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1PcLTACJkyh9D6pNXaJIVIVzqUTgCtvEw')">Episode 21 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1y0ardCUOwHFYc1if2EnZoy3IgiAFBMrN')">Episode 22 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1pA8ImCRx0dlpKpfsfwAiIMuTScVEQs_z')">Episode 23 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '12n5zBtFYc-vdXihunnisCMsRuIz0VwaJ')">Episode 24 <i class="fa-solid fa-play"></i></button>
+                </div>
+
+                <!-- Season 2 Episodes -->
+                <div id="season2" class="season-container" style="display:none;">
+                    <button class="episode-btn" onclick="switchEpisode(this, '12zMbQMRahxP4y1Zooo0xQATk6wOS1Egp')">Episode 1 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1yIDZGJc33H9yOS1YPe6el3W1XxqThlab')">Episode 2 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1Z-FXvgByfCF2Lx1pxJ45r9HrG7tAtpT9')">Episode 3 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1UZpuXi4UUNv0vm7Da3Z7XnMljJWlI_CK')">Episode 4 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1BVs7_6DY245NppDYDlUqETmC0g8oYBRC')">Episode 5 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1rHXK79bosD2cKwe0ynqEzLEJCQEYX5Gr')">Episode 6 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1InuwTxCblawM3GzAc0z0bxFgWhMgu_qD')">Episode 7 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1uvj8MApRteArWvubslj_SbtROJM5jwyA')">Episode 8 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '18Nh7KB3A3cNO2OXbBGDZmE6gGoGMKZjf')">Episode 9 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1CDkIk8mPv8IJVwPRyqMo3axXqhdVnGYc')">Episode 10 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1ufklICJiKxzB2ajOX1B-10lz-Vw2FchO')">Episode 11 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1DDRzJNY1kVEVsi5IKruwUrIxXDqw-_jR')">Episode 12 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '16Q6nZaeHwfvm1cFWRTuuvPQv4p68hm8H')">Episode 13 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1axR6vVc52-vzvluQtFNwjp6aKoVaJrDF')">Episode 14 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1lIrDWkv2SLS6vwNLmGlpHO5KKj9sAvJk')">Episode 15 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1z6L-3z155yHMWob-q9ZKJVjOtmkWUHzQ')">Episode 16 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1xOdteBN0nv_-C5S7IeNzpKH4u6hQro30')">Episode 17 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '13Fm8awAKmRQzG1nFxD8c1-GPYHLYrA9y')">Episode 18 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1DQYqf1gvf_bwNPR3SrnreFgveAblyQV0')">Episode 19 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '10eRlHtAJ3eUIVKBRkBuE2W-lt8dpkhlp')">Episode 20 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1eDXlPx3zbrDg_ZHB8nPFizqoD6JbpnPw')">Episode 21 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '17HJw12b3gPPs2eAwuof5zd6K-O3PfPPn')">Episode 22 <i class="fa-solid fa-play"></i></button>
+                    <button class="episode-btn" onclick="switchEpisode(this, '1u-uaYYMftGGHWsyJ_UILWK94BrRFNFFy')">Episode 23 <i class="fa-solid fa-play"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function switchEpisode(element, fileId) {
+            // Update Iframe
+            const iframe = document.getElementById('videoFrame');
+            iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+
+            // Update UI active state
+            document.querySelectorAll('.episode-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+
+            // Scroll top for mobile users
+            if(window.innerWidth < 1200) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function switchSeason() {
+            const selected = document.getElementById('seasonSelect').value;
+            const s1 = document.getElementById('season1');
+            const s2 = document.getElementById('season2');
+
+            if(selected === 'season1') {
+                s1.style.display = 'block';
+                s2.style.display = 'none';
+            } else {
+                s1.style.display = 'none';
+                s2.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

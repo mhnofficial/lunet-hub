@@ -1,0 +1,404 @@
+/* ====================================================================
+   LUNET | CORE STYLE SHEET (Minimalist Poppins Aesthetic)
+   ==================================================================== */
+
+:root {
+    /* Core Theme Variables */
+    --color-background-dark: #0A0014;
+    --color-primary: #8A2BE2; /* Default Blue Violet */
+    --color-secondary: #FF00FF; /* Default Neon Magenta */
+    --color-text-light: #F0F0F0;
+    --color-text-faded: #AAAAAA;
+
+    /* Styling Constants */
+    --border-radius-base: 6px; /* Slightly smaller radius for cleaner look */
+    --text-gradient: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    
+    /* Background Properties (Set dynamically by JS) */
+    --body-bg-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), 
+                     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    --body-bg: #0A0014;
+    --custom-bg-url: none;
+}
+
+/* Global Reset and Body Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--color-text-light);
+    background-color: var(--color-background-dark);
+    line-height: 1.6; /* Reduced line-height for cleaner text flow */
+    min-height: 100vh;
+    padding-top: 65px; /* Adjusted for cleaner navbar height */
+    
+    /* Background grid/pattern properties */
+    background-image: var(--body-bg-image);
+    background-color: var(--body-bg);
+    background-size: 50px 50px;
+    background-position: center center;
+    background-attachment: fixed;
+    transition: background-image 0.5s, background-color 0.5s;
+}
+/* Custom Background Image Layer */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--custom-bg-url);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.1; /* Very subtle opacity for minimalism */
+    z-index: -1;
+    transition: opacity 0.5s;
+}
+
+a {
+    color: var(--color-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+a:hover {
+    color: var(--color-primary);
+    text-shadow: none; /* REMOVED GLOW */
+}
+/* All headers use Poppins now */
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif; 
+    font-weight: 700;
+}
+
+/* --- Fixed Top Navbar (Cleaned) --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px; 
+    background: rgba(10, 0, 20, 0.95); /* Simple, dark background */
+    backdrop-filter: none; /* REMOVED JANKY BLUR */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03); 
+    box-shadow: none; /* REMOVED SHADOW */
+    z-index: 1000;
+}
+.logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 0px;
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none; /* REMOVED GLOW */
+}
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px; 
+}
+.nav-links a {
+    color: var(--color-text-faded);
+    font-weight: 500;
+    padding: 5px 0;
+}
+#profile-card {
+    padding: 6px 15px; 
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.05); 
+}
+#profile-card:hover {
+    background: rgba(138, 43, 226, 0.2);
+    box-shadow: none; 
+}
+
+/* --- Footer --- */
+footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    font-size: 0.8rem;
+    margin-top: 40px; 
+    text-align: center;
+    color: var(--color-text-faded);
+}
+
+/* ====================================
+   👤 MODAL STYLES (Cleaned)
+   ==================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95); 
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; 
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-box {
+    padding: 30px; 
+    max-width: 350px;
+    background-color: #0A0014;
+    border-radius: var(--border-radius-base);
+    border: 1px solid var(--color-primary);
+    box-shadow: none; 
+    transform: scale(0.98); 
+    transition: transform 0.3s ease;
+}
+.modal-overlay.open .modal-box {
+    transform: scale(1);
+}
+.modal-box input {
+    padding: 12px; 
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.modal-box button {
+    padding: 14px; 
+    border-radius: 4px;
+    background: var(--color-primary); /* Simpler, solid background */
+    color: white;
+}
+.modal-box button:hover {
+    background: var(--color-secondary);
+    opacity: 1;
+}
+
+/* ====================================
+   ⚙️ SETTINGS PANEL STYLES (Cleaned)
+   ==================================== */
+#settings-toggle {
+    top: 80px;
+    right: 25px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+#settings-panel {
+    width: 300px; /* Narrower for minimalism */
+    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.5); /* Subtler shadow */
+    border-left: 1px solid var(--color-primary); 
+    padding: 20px;
+}
+.setting-input {
+    padding: 10px;
+    border-radius: 4px;
+}
+.bg-preset-btn.active {
+    border-color: var(--color-primary);
+    box-shadow: none; 
+}
+
+
+/* ====================================================================
+   🖥️ DASHBOARD HUB LAYOUT STYLES (index.html specific)
+   ==================================================================== */
+.hub-container {
+    display: grid; 
+    grid-template-areas: 
+        "header header"
+        "nav content"
+        "nav news";
+    grid-template-columns: 320px 1fr; /* Slightly narrower left column */
+    gap: 30px; /* Reduced gap */
+    max-width: 1400px;
+    margin: 30px auto 60px; /* Reduced top margin */
+    padding: 0 30px 0 110px; 
+}
+@media (max-width: 1000px) {
+    .hub-container {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "header"
+            "nav"
+            "content"
+            "news";
+        padding: 80px 20px 60px 20px; 
+    }
+}
+
+/* --- Header & Clock --- */
+.hub-header {
+    padding: 0;
+    margin-bottom: 10px;
+}
+/* --- TITLE FIX: Pollito Pío proportions and visibility --- */
+.hub-header h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 5rem; /* Large size */
+    font-weight: 900; /* Max weight */
+    letter-spacing: 5px; /* Wider spacing for blocky look */
+    line-height: 1;
+    
+    /* Pollito Pio Style - Thick, high-contrast text using gradient fill */
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* HIGH VISIBILITY OUTLINE/STROKE (Contrast against dark background) */
+    -webkit-text-stroke: 1.5px var(--color-background-dark);
+    text-shadow: 
+        -2px -2px 0 var(--color-background-dark), 
+        2px -2px 0 var(--color-background-dark),
+        -2px 2px 0 var(--color-background-dark),
+        2px 2px 0 var(--color-background-dark);
+}
+#live-time {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 5px;
+    color: var(--color-text-faded);
+}
+
+/* --- Main Navigation Buttons (Inside Hub) --- */
+.main-nav {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px; 
+    box-shadow: none; /* REMOVED SHADOW */
+}
+.nav-section-title {
+    font-size: 1.2rem;
+    padding-bottom: 10px;
+    margin-bottom: 15px; 
+}
+.nav-button-group {
+    gap: 15px; 
+    margin-bottom: 30px;
+}
+.nav-button {
+    padding: 12px 15px; 
+    border-radius: 4px;
+    background: rgba(138, 43, 226, 0.1); /* Subtle, solid color base */
+    font-size: 0.95rem;
+    transition: background 0.2s; /* Removed transform for less jank */
+}
+.nav-button:hover {
+    transform: none; 
+    background: rgba(138, 43, 226, 0.2);
+}
+
+/* --- Main Content --- */
+.main-content {
+    padding: 30px; 
+    background: rgba(255, 255, 255, 0.02); 
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: none; 
+}
+.status-indicator {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+}
+
+/* --- System News Feed --- */
+.news-feed {
+    background: rgba(255, 255, 255, 0.02); /* Made same as main content for cleaner look */
+    padding: 30px;
+    border-radius: var(--border-radius-base);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+}
+.news-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* ====================================
+   🖱️ FIXED SIDEBAR MENU STYLES (Minimalist Fix)
+   ==================================== */
+.menu {
+    position: fixed;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    padding: 5px 2px; /* Smaller padding */
+    border-radius: var(--border-radius-base);
+    background-color: rgba(10, 0, 20, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.03); /* Thinner border */
+    box-shadow: none; /* REMOVED BOX SHADOW */
+}
+
+.link {
+    width: 45px; /* Smaller base width (closed) */
+    height: 45px;
+    margin: 5px 0; 
+    border-radius: 2px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--color-text-faded);
+}
+.link:hover,
+.link:focus {
+    width: 140px; /* Reduced expansion width for less 'jank' */
+    background: rgba(255, 255, 255, 0.05); /* Subtle box removal - just a dark tint */
+    color: var(--color-primary); /* Primary color accent on icon/text */
+}
+
+.link-icon {
+    left: 10px; /* Adjusted icon position */
+    width: 25px;
+    height: 25px;
+}
+.link-icon svg {
+    stroke-width: 10; /* Thinner stroke for minimalism */
+}
+
+.link-title {
+    text-indent: 40px; /* Adjusted text indent */
+    font-size: 0.85rem;
+}
+
+/* ====================================================================
+   AI WORLD NEWS FEED STYLES (Cleaned)
+   ==================================================================== */
+.left-column {
+    display: flex; 
+    flex-direction: column;
+    gap: 30px; /* Reduced gap */
+}
+.world-news-feed {
+    background: rgba(0, 0, 0, 0.4); 
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px; /* Reduced padding */
+    box-shadow: none;
+}
+.world-news-feed h2 {
+    font-size: 1.2rem;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.world-news-feed .news-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+.news-more-link {
+    background: rgba(138, 43, 226, 0.1); /* Subtle button */
+    margin-top: 10px;
+    font-weight: 500;
+}
+.news-more-link:hover {
+    background: rgba(138, 43, 226, 0.3);
+}

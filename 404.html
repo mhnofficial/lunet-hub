@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 Not Found</title>
+  <link rel="icon" type="image/png" href="e.ico">
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0b0014;
+    color: #fff;
+    font-family: 'Stack Sans Text', sans-serif;
+    overflow: hidden;
+  }
+
+  h1 {
+    font-size: 10rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.08);
+    user-select: none;
+    margin: 0;
+    cursor: default; /* looks unclickable */
+  }
+
+  p {
+    font-size: 1.2rem;
+    opacity: 0.5;
+  }
+
+  .back-btn {
+    margin-top: 40px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .back-btn:hover {
+    background: rgba(255,255,255,0.3);
+  }
+
+  /* Secret Snake game */
+  #snakeCanvas {
+    display: none;
+    background: #111;
+    border: 2px solid #444;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #exitBtn {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 18px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  #exitBtn:hover {
+    background: rgba(255,255,255,0.3);
+  }
+</style>
+</head>
+<body>
+  <h1 id="secret404">404</h1>
+  <p>Oops! Page not found.</p>
+  <a href="index.html" class="back-btn">Go Home</a>
+
+  <canvas id="snakeCanvas" width="400" height="400"></canvas>
+  <button id="exitBtn">Exit Game</button>
+
+  <script>
+    const secret = document.getElementById('secret404');
+    const canvas = document.getElementById('snakeCanvas');
+    const ctx = canvas.getContext('2d');
+    const exitBtn = document.getElementById('exitBtn');
+    let gameRunning = false;
+
+    // Snake game setup
+    let box = 20;
+    let snake, food, direction, game;
+
+    function startGame() {
+      snake = [{ x: 9 * box, y: 10 * box }];
+      direction = "RIGHT";
+      food = {
+        x: Math.floor(Math.random() * 19) * box,
+        y: Math.floor(Math.random() * 19) * box
+      };
+
+      document.body.style.background = "#000";
+      canvas.style.display = "block";
+      exitBtn.style.display = "block";
+      gameRunning = true;
+
+      document.addEventListener("keydown", directionControl);
+      game = setInterval(draw, 100);
+    }
+
+    function directionControl(event) {
+      if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+      else if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+      else if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+      else if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+    }
+
+    function draw() {
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, 400, 400);
+
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "#9650ff" : "#fff";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+      }
+
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, box, box);
+
+      let snakeX = snake[0].x;
+      let snakeY = snake[0].y;
+
+      if (direction === "LEFT") snakeX -= box;
+      if (direction === "UP") snakeY -= box;
+      if (direction === "RIGHT") snakeX += box;
+      if (direction === "DOWN") snakeY += box;
+
+      if (snakeX === food.x && snakeY === food.y) {
+        food = {
+          x: Math.floor(Math.random() * 19) * box,
+          y: Math.floor(Math.random() * 19) * box
+        };
+      } else {
+        snake.pop();
+      }
+
+      const newHead = { x: snakeX, y: snakeY };
+
+      // collision
+      if (
+        snakeX < 0 ||
+        snakeY < 0 ||
+        snakeX >= 400 ||
+        snakeY >= 400 ||
+        collision(newHead, snake)
+      ) {
+        clearInterval(game);
+        ctx.fillStyle = "#fff";
+        ctx.font = "20px sans-serif";
+        ctx.fillText("Game Over!", 130, 200);
+        return;
+      }
+
+      snake.unshift(newHead);
+    }
+
+    function collision(head, array) {
+      return array.some(segment => head.x === segment.x && head.y === segment.y);
+    }
+
+    secret.addEventListener("click", () => {
+      if (!gameRunning) startGame();
+    });
+
+    exitBtn.addEventListener("click", () => {
+      clearInterval(game);
+      canvas.style.display = "none";
+      exitBtn.style.display = "none";
+      document.body.style.background = "#0b0014";
+      gameRunning = false;
+    });
+  </script>
+</body>
+</html>

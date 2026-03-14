@@ -1,0 +1,209 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  background: black;
+}
+
+html {
+  height: auto;
+  overflow-y: auto;
+}
+
+.space {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; 
+}
+
+#stars {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.nebula {
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(180,80,255,0.35), transparent 70%),
+              radial-gradient(circle at 70% 70%, rgba(0,180,255,0.3), transparent 70%),
+              radial-gradient(circle at 50% 50%, rgba(255,50,150,0.25), transparent 80%);
+  filter: blur(150px);
+  opacity: 0.6;
+  animation: floatNebula 120s ease-in-out infinite alternate;
+  mix-blend-mode: screen;
+}
+
+.nebula1 { top: 20%; left: 10%; }
+.nebula2 { top: 50%; left: 50%; animation-delay: 10s; }
+.nebula3 { top: 70%; left: 30%; animation-delay: 20s; }
+
+@keyframes floatNebula {
+  0%   { transform: translate(0,0) scale(1); }
+  50%  { transform: translate(100px,-80px) scale(1.1); }
+  100% { transform: translate(-60px,100px) scale(0.95); }
+}
+
+.sidebar {
+  height: 100vh;
+  width: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.sidebar:hover {
+  width: 200px;
+}
+
+chat-room {
+    display: block;     
+    width: 100%;        
+    max-width: 1200px;  
+    margin: 0 auto;     
+  }
+
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  color: #ccc;
+  text-decoration: none;
+  padding: 15px;
+  white-space: nowrap;
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar a:hover {
+  background: #333;
+  color: #fff;
+}
+
+.sidebar i {
+  min-width: 30px;
+  text-align: center;
+}
+
+.sidebar span {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  transition-delay: 0s;
+}
+
+.sidebar:hover span {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.2s;
+}
+
+main {
+  margin-left: 60px;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+  color: white;
+  position: relative;
+  z-index: 10;
+}
+
+.sidebar:hover ~ main {
+  margin-left: 200px;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.curved-box {
+  background: rgba(30, 30, 30, 0.6);
+  padding: 15px 25px;
+  border-radius: 20px; 
+  max-width: 600px;
+  line-height: 1.6;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); 
+  backdrop-filter: blur(6px);
+}
+
+.glow-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+iframe {
+  width: 100%;
+  height: 90vh;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.glow-btn {
+  display: inline-block;
+  background: transparent;
+  color: #fff;
+  border: 2px solid #0ff;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 1.2em;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.3s ease;
+  box-shadow: 0 0 8px #0ff, inset 0 0 8px #0ff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.glow-btn:hover {
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, inset 0 0 10px #0ff;
+  transform: scale(1.05);
+}
+
+.glow-btn-3 {
+  display: inline-block;
+  background: transparent;
+  transition: 0.3s ease;
+  box-shadow: 0 0 8px rgb(23, 23, 23), inset 0 0 8px rgb(37, 37, 37);
+  border-radius: 6%;
+  padding: 10px;
+  border: 2px solid rgb(23, 23, 23);
+}
+
+.glow-btn-3:hover {
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgb(23, 23, 23), 0 0 40px rgb(32, 32, 32), inset 0 0 10px rgb(37, 37, 37);
+  transform: scale(1.05);
+}
+
+.fullscreen-button {
+  margin-left: 560px;
+  background: transparent;
+  color: #fff;
+  border: 2px solid #0ff;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 1.2em;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.3s ease;
+  text-align: center;
+}

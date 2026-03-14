@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunet Hub — Bluelock</title>
+    <link rel="icon" type="image/png" href="e.ico">
+    
+    <!-- Modern Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #9d50bb;
+            --secondary: #6e48aa;
+            --bg-dark: #090412;
+            --surface: #150d26;
+            --surface-hover: #1e1238;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent-glow: rgba(157, 80, 187, 0.3);
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 280px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(110, 72, 170, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(157, 80, 187, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* --- Sidebar Navigation (Universal) --- */
+        nav {
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex; flex-direction: column;
+            padding: 40px 24px; height: 100vh;
+            position: fixed; left: 0; top: 0; z-index: 100;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 14px; margin-bottom: 50px; padding: 0 10px; }
+        .logo-area img { width: 42px; height: 42px; border-radius: 12px; box-shadow: 0 0 15px var(--accent-glow); }
+        .logo-area h1 { font-size: 1.5rem; font-weight: 700; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .nav-links a { display: flex; align-items: center; gap: 14px; padding: 16px 20px; color: var(--text-muted); text-decoration: none; border-radius: var(--radius-md); transition: var(--transition); font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { background: var(--surface-hover); color: #fff; transform: translateX(5px); }
+        .nav-links a i { font-size: 1.2rem; width: 24px; }
+        .nav-links a.active i { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+
+        /* --- Main Player Layout --- */
+        main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 60px;
+            display: grid;
+            grid-template-columns: 1fr 300px; /* Video player + Episode List */
+            gap: 40px;
+        }
+
+        .player-header { grid-column: 1 / -1; margin-bottom: 20px; }
+        .player-header h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; }
+        .player-header p { color: var(--text-muted); }
+
+        /* Video Container */
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            aspect-ratio: 16 / 9;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* --- Episode Sidebar --- */
+        .episode-list {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: calc(16/9 * 40vw); /* Matches video height roughly */
+            overflow-y: auto;
+        }
+
+        .episode-list::-webkit-scrollbar { width: 6px; }
+        .episode-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .episode-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-align: left;
+            font-family: inherit;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .episode-btn:hover {
+            background: var(--surface-hover);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .episode-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .episode-btn i { font-size: 0.8rem; opacity: 0.5; }
+
+        /* Mobile */
+        @media (max-width: 1200px) {
+            main { grid-template-columns: 1fr; margin-left: 80px; padding: 30px; }
+            nav { width: 80px; padding: 30px 10px; }
+            nav h1, nav span { display: none; }
+            .episode-list { max-height: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav>
+        <div class="logo-area">
+            <img src="../e.ico" alt="Lunet">
+            <h1>Lunet</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a></li>
+            <li><a href="../games.html"><i class="fa-solid fa-gamepad"></i> <span>Arcade</span></a></li>
+            <li><a href="../ai.html"><i class="fa-solid fa-code"></i> <span>Timothy AI</span></a></li>
+            <li><a href="enter.html"><i class="fa-solid fa-tv"></i> <span>Streaming</span></a></li>
+            <li><a href="../tools.html"><i class="fa-solid fa-toolbox"></i> <span>Utility</span></a></li>
+            <li><a href="../other.html"><i class="fa-solid fa-bell"></i> <span>OS</span></a></li>
+            <li><a href="../about.html"><i class="fa-solid fa-circle"></i> <span>About</span></a></li>
+        </ul>
+        <div style="margin-top: auto; text-align: center;">
+            <p style="font-size: 0.7rem; color: var(--text-muted);">© 2025 Lunet</p>
+        </div>
+    </nav>
+
+    <main>
+        <div class="player-header">
+            <h2>Bluelock</h2>
+            <p>Season 1 • Japanese Audio (DUB)</p>
+        </div>
+
+        <!-- Video Display -->
+        <div class="video-container">
+            <iframe id="videoFrame"
+                src="https://drive.google.com/file/d/1iAqtYqh8rgnFVbWVepB4SPNdKSEgFArb/preview"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <!-- Episode Selection -->
+        <div class="episode-list">
+            <button class="episode-btn active" onclick="switchEpisode(this, '1iAqtYqh8rgnFVbWVepB4SPNdKSEgFArb')">Episode 1 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1tS1YPZnATWitOEVBUAb5ZpmASJhqXaWq')">Episode 2 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1vrY88yqvS9j31kyPRpMtZu64PKS8nKE5')">Episode 3 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '19w1CD1xpB_MZLc3nnzP5thhtt4uRoVup')">Episode 4 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1XpDEu-lwuvXyC6yiIc_Ltw1syyMU7XV2')">Episode 5 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '17d2VxePhe6t_8czDB7zZynB-7xoK90T5')">Episode 6 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1cVpX0c7ziRAghA4qnKyNXmQWTtarH979')">Episode 7 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '144SbJYj5juwxRPIAh0986auSjRE4HQm-')">Episode 8 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1gHHszo4JKlJBohnbsGJnMfQ2hpsdDauO')">Episode 9 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1afm3atmVzhV7jmT0SHqdYG8VoIpuIwvF')">Episode 10 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1dGZIYkCLnBiMoMx-sOtedkOji9kBVwu_')">Episode 11 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1EF2hh28s697lE3amw7S7XFW8mowK_pto')">Episode 12 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1ARi9KnlsIX5lOXqvlmpP8qrOO82J7b5c')">Episode 13 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1k0IVaHYq2Ibw5ZAcofmIj62kvGirRvIX')">Episode 14 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1kapsupjbuh9cYFFS2H2J7seoqhvAxWbL')">Episode 15 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1YypkxpmAAc3euhj64NH7y6cN_MsYY-5q')">Episode 16 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1akE5jQ8ilnkdLOC3ViXFd90WHYTv58y8')">Episode 17 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1fVGLRbLs6KoQcGtNd4vL7A3_WT21g8ci')">Episode 18 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1gVQpFNgUuYl9eoXWoH3DFSqRrp4eoMOL')">Episode 19 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1EkVjX3hdfVyDx1aZKAp6zXBnSb6UBza9')">Episode 20 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1jJOWlF8jWwHwhEA5wB5zhMpU_tHgrda1')">Episode 21 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '13yGi7SJE_4Wt7-rJoMAFRA454TMbTWVu')">Episode 22 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1HKBObjUmsVEjIEijs021ePvgBztcyFe0')">Episode 23 <i class="fa-solid fa-play"></i></button>
+            <button class="episode-btn" onclick="switchEpisode(this, '1VcFf07zoC9PgkflGP0j6Cm3EP9sEl9cw')">Episode 24 <i class="fa-solid fa-play"></i></button>
+        </div>
+    </main>
+
+    <script>
+        function switchEpisode(element, fileId) {
+            // Update Iframe
+            const iframe = document.getElementById('videoFrame');
+            iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+
+            // Update UI active state
+            document.querySelectorAll('.episode-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+
+            // Scroll to top of player for better UX
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
