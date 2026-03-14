@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunet Hub — Browser</title>
+    <link rel="icon" type="image/png" href="e.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #a855f7;
+            --secondary: #7c3aed;
+            --bg-dark: #09060d;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-border: rgba(255, 255, 255, 0.06);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-image:
+                    radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* NAV */
+        nav {
+            width: 100%;
+            height: 70px;
+            background: rgba(9, 6, 13, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--surface-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: 1px; }
+        .nav-links { list-style: none; display: flex; gap: 8px; }
+        .nav-links a {
+            padding: 8px 16px; color: var(--text-muted);
+            text-decoration: none; border-radius: var(--radius-md);
+            font-size: 0.85rem; font-weight: 500; transition: var(--transition);
+        }
+        .nav-links a:hover, .nav-links a.active { background: var(--surface); color: #fff; }
+
+        /* BROWSER TOOLBAR */
+        .browser-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(9, 6, 13, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--surface-border);
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            color: var(--text-muted);
+            width: 36px; height: 36px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 13px;
+            display: grid; place-items: center;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        .nav-btn:hover { background: rgba(168,85,247,0.12); color: var(--primary); border-color: rgba(168,85,247,0.3); }
+        .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+        .address-bar {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-lg);
+            padding: 0 16px;
+            gap: 10px;
+            height: 40px;
+            transition: var(--transition);
+        }
+        .address-bar:focus-within {
+            border-color: rgba(168,85,247,0.5);
+            box-shadow: 0 0 0 3px rgba(168,85,247,0.08);
+        }
+        .lock-icon { color: #10b981; font-size: 11px; flex-shrink: 0; }
+        .lock-icon.insecure { color: #f59e0b; }
+        .address-bar input {
+            flex: 1; background: none; border: none; outline: none;
+            color: var(--text-main); font-size: 0.85rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .address-bar input::placeholder { color: var(--text-muted); }
+
+        .go-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none; color: #fff;
+            padding: 0 20px; height: 36px;
+            border-radius: var(--radius-md);
+            cursor: pointer; font-weight: 600;
+            font-size: 0.82rem; font-family: 'Poppins', sans-serif;
+            transition: var(--transition); flex-shrink: 0;
+            letter-spacing: 0.5px;
+        }
+        .go-btn:hover { opacity: 0.85; transform: scale(0.97); }
+
+        /* LOADING BAR */
+        .loading-bar {
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+            background-size: 200% 100%;
+            width: 0%; flex-shrink: 0;
+            transition: opacity 0.3s;
+        }
+        .loading-bar.active {
+            animation: loading-move 1.2s ease-in-out infinite;
+            width: 100%;
+        }
+        @keyframes loading-move {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        /* HOME SCREEN */
+        .home-screen {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 36px; padding: 40px;
+            overflow-y: auto;
+        }
+
+        .home-title { text-align: center; }
+        .home-title h2 {
+            font-size: 2.8rem; font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 60%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .home-title p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .home-search {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-lg);
+            padding: 14px 20px;
+            width: 100%; max-width: 600px;
+            transition: var(--transition);
+        }
+        .home-search:focus-within {
+            border-color: rgba(168,85,247,0.5);
+            box-shadow: 0 0 0 4px rgba(168,85,247,0.08);
+        }
+        .home-search i { color: var(--text-muted); font-size: 1rem; }
+        .home-search input {
+            flex: 1; background: none; border: none; outline: none;
+            color: var(--text-main); font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .home-search input::placeholder { color: var(--text-muted); }
+        .home-search button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none; color: #fff;
+            width: 38px; height: 38px; border-radius: var(--radius-md);
+            cursor: pointer; display: grid; place-items: center;
+            transition: var(--transition); flex-shrink: 0;
+        }
+        .home-search button:hover { opacity: 0.85; transform: scale(0.97); }
+
+        /* QUICK SITES */
+        .quick-sites-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .site-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-lg);
+            padding: 18px 16px;
+            cursor: pointer;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 10px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .site-card:hover {
+            border-color: rgba(168,85,247,0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            background: rgba(168,85,247,0.05);
+        }
+        .site-card img { width: 28px; height: 28px; border-radius: 8px; }
+        .site-card span { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
+
+        /* IFRAME */
+        .browser-frame {
+            flex: 1; border: none; display: none; background: #fff;
+        }
+
+        /* ERROR PAGE */
+        .error-page {
+            flex: 1; display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 16px;
+        }
+        .error-icon {
+            width: 70px; height: 70px;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: var(--radius-lg);
+            display: grid; place-items: center;
+        }
+        .error-icon i { font-size: 1.8rem; color: #ef4444; }
+        .error-page h3 { font-size: 1.3rem; font-weight: 600; }
+        .error-page p { font-size: 0.85rem; color: var(--text-muted); max-width: 380px; text-align: center; }
+        .error-retry {
+            background: var(--surface); border: 1px solid var(--surface-border);
+            color: var(--primary); padding: 10px 24px; border-radius: var(--radius-md);
+            cursor: pointer; font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem; font-weight: 600; transition: var(--transition);
+        }
+        .error-retry:hover { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.4); }
+
+        /* STATUS BAR */
+        .status-bar {
+            height: 26px; background: rgba(9,6,13,0.9);
+            border-top: 1px solid var(--surface-border);
+            display: flex; align-items: center;
+            padding: 0 20px; gap: 20px; flex-shrink: 0;
+        }
+        .status-bar span { font-size: 0.65rem; color: var(--text-muted); }
+        #status-text { flex: 1; }
+        #sw-status { display: flex; align-items: center; gap: 5px; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #ef4444; }
+        .status-dot.online { background: #10b981; }
+
+        @media (max-width: 768px) {
+            .nav-links span { display: none; }
+            .quick-sites-grid { grid-template-columns: repeat(3, 1fr); }
+            .home-title h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo-area">
+        <img src="e.ico" alt="Lunet" width="32" height="32" style="border-radius: 8px;">
+        <h1>LUNET</h1>
+    </div>
+    <ul class="nav-links">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="games.html">Arcade</a></li>
+        <li><a href="ai.html">Timothy AI</a></li>
+        <li><a href="browser.html" class="active">Browser</a></li>
+        <li><a href="about.html">About</a></li>
+    </ul>
+</nav>
+
+<div class="browser-toolbar">
+    <button class="nav-btn" id="btn-back" title="Back" disabled><i class="fa-solid fa-arrow-left"></i></button>
+    <button class="nav-btn" id="btn-forward" title="Forward" disabled><i class="fa-solid fa-arrow-right"></i></button>
+    <button class="nav-btn" id="btn-reload" title="Reload"><i class="fa-solid fa-rotate-right"></i></button>
+    <button class="nav-btn" id="btn-home" title="Home"><i class="fa-solid fa-house"></i></button>
+
+    <div class="address-bar">
+        <i class="fa-solid fa-lock lock-icon" id="lock-icon"></i>
+        <input type="text" id="url-input" placeholder="Search or enter a URL..." autocomplete="off" spellcheck="false"/>
+    </div>
+
+    <button class="go-btn" id="btn-go">Go</button>
+</div>
+
+<div class="loading-bar" id="loading-bar"></div>
+
+<!-- HOME SCREEN -->
+<div class="home-screen" id="home-screen">
+    <div class="home-title">
+        <h2>Lunet Browser</h2>
+        <p>Private, unrestricted browsing — powered by Scramjet</p>
+    </div>
+
+    <div class="home-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="home-input" placeholder="Search Google or enter a URL..." autocomplete="off"/>
+        <button id="home-btn"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <div class="quick-sites-grid">
+        <div class="site-card" data-url="https://www.youtube.com">
+            <img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=32" alt="">
+            <span>YouTube</span>
+        </div>
+        <div class="site-card" data-url="https://www.google.com">
+            <img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt="">
+            <span>Google</span>
+        </div>
+        <div class="site-card" data-url="https://www.reddit.com">
+            <img src="https://www.google.com/s2/favicons?domain=reddit.com&sz=32" alt="">
+            <span>Reddit</span>
+        </div>
+        <div class="site-card" data-url="https://discord.com/app">
+            <img src="https://www.google.com/s2/favicons?domain=discord.com&sz=32" alt="">
+            <span>Discord</span>
+        </div>
+        <div class="site-card" data-url="https://open.spotify.com">
+            <img src="https://www.google.com/s2/favicons?domain=spotify.com&sz=32" alt="">
+            <span>Spotify</span>
+        </div>
+        <div class="site-card" data-url="https://www.wikipedia.org">
+            <img src="https://www.google.com/s2/favicons?domain=wikipedia.org&sz=32" alt="">
+            <span>Wikipedia</span>
+        </div>
+    </div>
+</div>
+
+<!-- BROWSER IFRAME -->
+<iframe id="browser-frame" class="browser-frame"></iframe>
+
+<!-- ERROR PAGE -->
+<div class="error-page" id="error-page">
+    <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <h3>Can't reach this page</h3>
+    <p id="error-msg">The proxy couldn't load this site. The URL may be invalid or the site may be blocking proxies.</p>
+    <button class="error-retry" id="btn-retry">Try Again</button>
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+    <span id="status-text">Ready</span>
+    <span id="sw-status"><div class="status-dot" id="status-dot"></div> Proxy offline</span>
+</div>
+
+<script type="module">
+    import { ScramjetController } from "/scram/scramjet.bundle.js";
+
+    const sj = new ScramjetController({
+        prefix: "/scram/service/",
+        files: {
+            wasm:   "/scram/e5fbf26ed3a3f41a.wasm",
+            worker: "/scram/scramjet.bundle.js",
+            client: "/scram/scramjet.bundle.js",
+            shared: "/scram/scramjet.bundle.js",
+            sync:   "/scram/scramjet.sync.js",
+        }
+    });
+
+    const swStatusEl  = document.getElementById('sw-status');
+    const statusDot   = document.getElementById('status-dot');
+    const statusText  = document.getElementById('status-text');
+    const frame       = document.getElementById('browser-frame');
+    const urlInput    = document.getElementById('url-input');
+    const homeScreen  = document.getElementById('home-screen');
+    const errorPage   = document.getElementById('error-page');
+    const loadingBar  = document.getElementById('loading-bar');
+    const lockIcon    = document.getElementById('lock-icon');
+
+    let currentUrl = '';
+
+    // Register SW
+    try {
+        await sj.init("/sw.js");
+        statusDot.classList.add('online');
+        swStatusEl.innerHTML = `<div class="status-dot online"></div> Proxy active`;
+        statusText.textContent = 'Ready';
+    } catch(e) {
+        swStatusEl.innerHTML = `<div class="status-dot"></div> Proxy error`;
+        console.error(e);
+    }
+
+    function formatUrl(raw) {
+        raw = raw.trim();
+        if (!raw.includes('.') || raw.includes(' ')) {
+            return `https://www.google.com/search?q=${encodeURIComponent(raw)}`;
+        }
+        if (!/^https?:\/\//i.test(raw)) return 'https://' + raw;
+        return raw;
+    }
+
+    function updateLock(url) {
+        lockIcon.className = url.startsWith('https://')
+            ? 'fa-solid fa-lock lock-icon'
+            : 'fa-solid fa-lock-open lock-icon insecure';
+    }
+
+    function navigate(raw) {
+        const url = formatUrl(raw);
+        currentUrl = url;
+        urlInput.value = url;
+        updateLock(url);
+
+        homeScreen.style.display  = 'none';
+        errorPage.style.display   = 'none';
+        frame.style.display       = 'block';
+        loadingBar.classList.add('active');
+        statusText.textContent    = `Loading...`;
+
+        document.getElementById('btn-back').disabled    = false;
+        document.getElementById('btn-forward').disabled = false;
+
+        try {
+            sj.navigateTo(url, frame);
+        } catch(e) {
+            showError('Proxy failed to route this URL.');
+        }
+    }
+
+    function showError(msg) {
+        frame.style.display      = 'none';
+        errorPage.style.display  = 'flex';
+        document.getElementById('error-msg').textContent = msg;
+        loadingBar.classList.remove('active');
+        statusText.textContent = 'Error';
+    }
+
+    function showHome() {
+        frame.style.display      = 'none';
+        errorPage.style.display  = 'none';
+        homeScreen.style.display = 'flex';
+        urlInput.value = '';
+        statusText.textContent = 'Ready';
+        document.getElementById('btn-back').disabled    = true;
+        document.getElementById('btn-forward').disabled = true;
+        lockIcon.className = 'fa-solid fa-lock lock-icon';
+    }
+
+    frame.addEventListener('load', () => {
+        loadingBar.classList.remove('active');
+        statusText.textContent = 'Done';
+        try {
+            const decoded = sj.sourceUrl(frame.contentWindow.location.href);
+            if (decoded) { urlInput.value = decoded; updateLock(decoded); }
+        } catch(e) {}
+    });
+
+    document.getElementById('btn-go').addEventListener('click', () => {
+        if (urlInput.value.trim()) navigate(urlInput.value);
+    });
+    urlInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && urlInput.value.trim()) navigate(urlInput.value);
+    });
+    document.getElementById('btn-back').addEventListener('click', () => {
+        try { frame.contentWindow.history.back(); } catch(e) {}
+    });
+    document.getElementById('btn-forward').addEventListener('click', () => {
+        try { frame.contentWindow.history.forward(); } catch(e) {}
+    });
+    document.getElementById('btn-reload').addEventListener('click', () => {
+        try { frame.contentWindow.location.reload(); } catch(e) {}
+    });
+    document.getElementById('btn-home').addEventListener('click', showHome);
+    document.getElementById('btn-retry').addEventListener('click', () => {
+        if (currentUrl) navigate(currentUrl);
+    });
+
+    document.getElementById('home-btn').addEventListener('click', () => {
+        const v = document.getElementById('home-input').value.trim();
+        if (v) navigate(v);
+    });
+    document.getElementById('home-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            const v = e.target.value.trim();
+            if (v) navigate(v);
+        }
+    });
+
+    document.querySelectorAll('.site-card').forEach(card => {
+        card.addEventListener('click', () => navigate(card.dataset.url));
+    });
+</script>
+
+</body>
+</html>
