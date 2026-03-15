@@ -433,10 +433,11 @@
     </div>
     <ul class="nav-links">
         <li><a href="index.html">Dashboard</a></li>
+        <li><a href="browser.html">Browser</a></li>
         <li><a href="games.html">Arcade</a></li>
         <li><a href="ai.html" class="active">Timothy AI</a></li>
+        <li><a href="account.html"><i class="fa-solid fa-user"></i> <span>Account</span></a></li>
         <li><a href="enter/enter.html"><i class="fa-solid fa-tv"></i> <span>Streaming</span></a></li>
-        <li><a href="browser.html">Browser</a></li>
     </ul>
 </nav>
 
@@ -516,11 +517,11 @@
                 <ul>
                     <li>Works immediately — no signup needed</li>
                     <li>Supports Claude, Gemini, and ChatGPT</li>
-                    <li>May have rate limits during high traffic</li>
-                    <li>Keys are managed by Lunet — never exposed to you</li>
+                    <li>15 free messages per day on site keys</li>
+                    <li>Site credits may occasionally run low during high traffic — if you see a credit error, switch models or add your own key</li>
                 </ul>
             </div>
-            <p style="font-size:0.82rem; color: var(--text-muted);">If you have your own API keys and want unlimited usage, switch to the "Use My Own Keys" tab.</p>
+            <p style="font-size:0.82rem; color: var(--text-muted);">💡 <strong style="color:#c084fc">Tip:</strong> Gemini (Google) has a very generous free tier — if Claude is down, switch to Gemini. Add your own key for unlimited uninterrupted access.</p>
         </div>
 
         <!-- Own Keys Tab -->
@@ -750,13 +751,36 @@
             const data = await res.json();
 
             if (res.status === 429 && data.error === 'limit_reached') {
-                // Server confirmed limit hit
+                // Server confirmed daily limit hit
                 document.getElementById(loadingId).textContent = data.message;
                 document.getElementById(loadingId).classList.remove('thinking');
                 document.getElementById('limitBanner').classList.add('show');
-                conversationHistory.pop(); // remove the user message since it wasn't answered
+                conversationHistory.pop();
             } else if (!res.ok) {
-                throw new Error(data.error || 'Worker error');
+                // Friendly error messages instead of raw API errors
+                const rawError = data.error || '';
+                let friendlyMsg = "";
+
+                if (rawError.toLowerCase().includes('credit') || rawError.toLowerCase().includes('billing') || rawError.toLowerCase().includes('balance')) {
+                    if (usingOwnKey) {
+                        friendlyMsg = "💳 Your API key is out of credits. Top up at the provider billing page, or switch to a different model.";
+                    } else {
+                        friendlyMsg = "😅 The site free credits are running low right now. Add your own API key (free to get one) to keep chatting without interruption.";
+                        openModal();
+                    }
+                } else if (rawError.toLowerCase().includes('rate') || rawError.toLowerCase().includes('429')) {
+                    friendlyMsg = "⏳ Too many requests right now — wait a few seconds and try again.";
+                } else if (rawError.toLowerCase().includes('invalid') && rawError.toLowerCase().includes('key')) {
+                    friendlyMsg = "🔑 Invalid API key. Double-check your key in settings.";
+                } else if (rawError.toLowerCase().includes('quota')) {
+                    friendlyMsg = "📊 API quota exceeded. Try again tomorrow or add your own key.";
+                } else {
+                    friendlyMsg = '⚠️ Something went wrong: ' + rawError;
+                }
+
+                document.getElementById(loadingId).textContent = friendlyMsg;
+                document.getElementById(loadingId).classList.remove('thinking');
+                conversationHistory.pop();
             } else {
                 // Success
                 if (!usingOwnKey) incrementUsed();
@@ -767,8 +791,14 @@
             }
 
         } catch (err) {
-            document.getElementById(loadingId).textContent = '⚠️ Error: ' + err.message;
-            document.getElementById(loadingId).classList.remove('thinking');
+            // Network / fetch failure
+            const el = document.getElementById(loadingId);
+            if (err.message.includes('fetch') || err.message.includes('network') || err.message.includes('Failed')) {
+                el.textContent = '📡 Could not reach the server. Check your connection and try again.';
+            } else {
+                el.textContent = '⚠️ ' + err.message;
+            }
+            el.classList.remove('thinking');
             conversationHistory.pop();
         }
 

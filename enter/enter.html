@@ -113,10 +113,11 @@
     </div>
     <ul class="nav-links">
         <li><a href="../index.html">Dashboard</a></li>
+        <li><a href="../browser.html">Browser</a></li>
         <li><a href="../games.html">Arcade</a></li>
-        <li><a href="../ai.html">Timothy AI</a></li>
+        <li><a href="../ai.html" class="active">Timothy AI</a></li>
+        <li><a href="../account.html"><i class="fa-solid fa-user"></i> <span>Account</span></a></li>
         <li><a href="enter.html"><i class="fa-solid fa-tv"></i> <span>Streaming</span></a></li>
-        <li><a href="../browser.html" class="active">Browser</a></li>
     </ul>
 </nav>
 
@@ -224,6 +225,7 @@
 
     window.onload = initCinema;
 </script>
-
+<script src="../lunet-gate.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => LunetGate.init('movies'));</script>
 </body>
 </html>
