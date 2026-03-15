@@ -6,6 +6,7 @@
     <title>Lunet Hub — Browser</title>
     <link rel="icon" type="image/png" href="e.ico">
     <script src="/scram/scramjet.all.js"></script>
+    <script src="/baremux/index.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -357,9 +358,7 @@
 </div>
 
 
-<script type="module">
-    import { BareMuxConnection } from "/scram/baremux.mjs";
-
+<script>
     const { ScramjetController } = $scramjetLoadController();
     window.sj = new ScramjetController({
         files: {
@@ -370,7 +369,7 @@
     });
     sj.init();
 
-    window.connection = new BareMuxConnection("/scram/baremux-worker.js");
+    window.connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 
     const swStatusEl = document.getElementById('sw-status');
     const statusDot  = document.getElementById('status-dot');
@@ -394,6 +393,7 @@
                 });
             }
 
+            const wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
             if ((await connection.getTransport()) !== "/scram/epoxy.mjs") {
                 await connection.setTransport("/scram/epoxy.mjs", [{ wisp: "wss://wisp.mercuryworkshop.workers.dev/" }]);
             }
@@ -438,11 +438,9 @@
         document.getElementById('btn-forward').disabled = false;
 
         if (currentFrame) currentFrame.frame.remove();
-
         currentFrame = sj.createFrame();
         currentFrame.frame.className = 'browser-frame';
         currentFrame.frame.style.cssText = 'flex:1;border:none;width:100%;height:100%;display:block;';
-
         const statusBar = document.querySelector('.status-bar');
         statusBar.parentNode.insertBefore(currentFrame.frame, statusBar);
 
@@ -499,5 +497,6 @@
         card.addEventListener('click', () => navigate(card.dataset.url));
     });
 </script>
+
 </body>
 </html>
