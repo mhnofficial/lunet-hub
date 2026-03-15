@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lunet Hub — Browser</title>
     <link rel="icon" type="image/png" href="e.ico">
+    <script src="/scram/scramjet.all.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -355,19 +356,18 @@
     <span id="sw-status"><div class="status-dot" id="status-dot"></div> Proxy offline</span>
 </div>
 
-<script src="/scram/scramjet.all.js"></script>
-<script>
-    const { ScramjetController } = $scramjetLoadController();
+
+<script type="module">
+    import ScramjetController from "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.controller.js";
 
     const sj = new ScramjetController({
         prefix: "/scram/service/",
-        bare: ["https://baremux.torahanytime.com/"],
         files: {
-            wasm:   "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/e5fbf26ed3a3f41a.wasm",
-            worker: "/scram/scramjet.all.js",
-            client: "/scram/scramjet.all.js",
-            shared: "/scram/scramjet.all.js",
-            sync:   "/scram/scramjet.sync.js",
+            wasm:   "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.wasm.js",
+            worker: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.worker.js",
+            client: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.client.js",
+            shared: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.shared.js",
+            sync:   "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.sync.js",
         }
     });
 
@@ -387,8 +387,8 @@
         swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
         statusText.textContent = 'Ready';
     }).catch(e => {
-        swStatusEl.innerHTML = '<div class="status-dot"></div> Proxy error: ' + e.message;
-        console.error(e);
+        swStatusEl.innerHTML = '<div class="status-dot"></div> SW Error: ' + e.message;
+        console.error('SW Error:', e);
     });
 
     function formatUrl(raw) {
@@ -418,7 +418,7 @@
         statusText.textContent   = 'Loading...';
         document.getElementById('btn-back').disabled    = false;
         document.getElementById('btn-forward').disabled = false;
-        sj.navigate(url, frame);
+        frame.src = sj.encodeUrl(url);
     }
 
     function showHome() {
@@ -436,7 +436,7 @@
         loadingBar.classList.remove('active');
         statusText.textContent = 'Done';
         try {
-            const decoded = sj.sourceUrl(frame.contentWindow.location.href);
+            const decoded = sj.decodeUrl(frame.contentWindow.location.href);
             if (decoded) { urlInput.value = decoded; updateLock(decoded); }
         } catch(e) {}
     });
