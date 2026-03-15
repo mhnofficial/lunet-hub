@@ -394,53 +394,55 @@
         window.location.reload();
     });
 </script>
+<script src="/scram/scramjet.all.js"></script>
+<script src="/scram/baremux.mjs" type="module"></script>
 <script>
     const { ScramjetController } = $scramjetLoadController();
     window.sj = new ScramjetController({
-        prefix: "/scram/service/",
-        codec: "plain",
-        wasm: "/scram/e5fbf26ed3a3f41a.wasm",
         files: {
-            wasm:   "/scram/e5fbf26ed3a3f41a.wasm",
-            worker: "/scram/scramjet.all.js",
-            client: "/scram/scramjet.all.js",
-            shared: "/scram/scramjet.all.js",
-            sync:   "/scram/scramjet.sync.js",
-        }
+            wasm: "/scram/scramjet.wasm.wasm",
+            all:  "/scram/scramjet.all.js",
+            sync: "/scram/scramjet.sync.js",
+        },
     });
+    sj.init();
+
+    const connection = new BareMux.BareMuxConnection("/scram/baremux-worker.js");
 
     const swStatusEl = document.getElementById('sw-status');
     const statusDot  = document.getElementById('status-dot');
     const statusText = document.getElementById('status-text');
-    const frame      = document.getElementById('browser-frame');
     const urlInput   = document.getElementById('url-input');
     const homeScreen = document.getElementById('home-screen');
     const errorPage  = document.getElementById('error-page');
     const loadingBar = document.getElementById('loading-bar');
     const lockIcon   = document.getElementById('lock-icon');
+    let currentFrame = null;
     let currentUrl   = '';
 
     async function initProxy() {
         try {
-            await sj.init("/sw.js");
+            await navigator.serviceWorker.register('/sw.js');
+            await navigator.serviceWorker.ready;
 
             if (!navigator.serviceWorker.controller) {
                 await new Promise(resolve => {
                     navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true });
                 });
             }
-            await sj.modifyConfig({
-                prefix: "/scram/service/",
-                codec: "plain",
-            });
-            console.log("Config after modify:", JSON.stringify(sj.config));
+
+            const wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
+            if ((await connection.getTransport()) !== "/scram/epoxy.mjs") {
+                await connection.setTransport("/scram/epoxy.mjs", [{ wisp: "wss://wisp.mercuryworkshop.workers.dev/" }]);
+            }
+
             statusDot.classList.add('online');
             swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
             statusText.textContent = 'Ready';
-            console.log('SW active and controlling');
+            console.log('Proxy ready!');
         } catch(e) {
             swStatusEl.innerHTML = '<div class="status-dot"></div> Error: ' + e.message;
-            console.error('SW Error:', e);
+            console.error('Proxy Error:', e);
         }
     }
 
@@ -468,33 +470,47 @@
         updateLock(url);
         homeScreen.style.display = 'none';
         errorPage.style.display  = 'none';
-        frame.style.display      = 'block';
         loadingBar.classList.add('active');
         statusText.textContent   = 'Loading...';
         document.getElementById('btn-back').disabled    = false;
         document.getElementById('btn-forward').disabled = false;
-        frame.src = sj.encodeUrl(url);
+
+        // Remove old frame if exists
+        if (currentFrame) currentFrame.frame.remove();
+
+        // Create new scramjet frame
+        currentFrame = sj.createFrame();
+        currentFrame.frame.id = 'browser-frame';
+        currentFrame.frame.className = 'browser-frame';
+        currentFrame.frame.style.cssText = 'flex:1;border:none;width:100%;height:100%;display:block;';
+        document.querySelector('.browser-frame')?.remove();
+
+        // Insert frame before status bar
+        const statusBar = document.querySelector('.status-bar');
+        statusBar.parentNode.insertBefore(currentFrame.frame, statusBar);
+
+        currentFrame.frame.addEventListener('load', () => {
+            loadingBar.classList.remove('active');
+            statusText.textContent = 'Done';
+            try {
+                const decoded = sj.decodeUrl(currentFrame.frame.contentWindow.location.href);
+                if (decoded) { urlInput.value = decoded; updateLock(decoded); }
+            } catch(e) {}
+        });
+
+        currentFrame.go(url);
     }
 
     function showHome() {
-        frame.style.display      = 'none';
-        errorPage.style.display  = 'none';
+        if (currentFrame) { currentFrame.frame.remove(); currentFrame = null; }
         homeScreen.style.display = 'flex';
+        errorPage.style.display  = 'none';
         urlInput.value = '';
         statusText.textContent = 'Ready';
         document.getElementById('btn-back').disabled    = true;
         document.getElementById('btn-forward').disabled = true;
         lockIcon.className = 'fa-solid fa-lock lock-icon';
     }
-
-    frame.addEventListener('load', () => {
-        loadingBar.classList.remove('active');
-        statusText.textContent = 'Done';
-        try {
-            const decoded = sj.decodeUrl(frame.contentWindow.location.href);
-            if (decoded) { urlInput.value = decoded; updateLock(decoded); }
-        } catch(e) {}
-    });
 
     document.getElementById('btn-go').addEventListener('click', () => {
         if (urlInput.value.trim()) navigate(urlInput.value);
@@ -503,13 +519,13 @@
         if (e.key === 'Enter' && urlInput.value.trim()) navigate(urlInput.value);
     });
     document.getElementById('btn-back').addEventListener('click', () => {
-        try { frame.contentWindow.history.back(); } catch(e) {}
+        try { currentFrame?.frame.contentWindow.history.back(); } catch(e) {}
     });
     document.getElementById('btn-forward').addEventListener('click', () => {
-        try { frame.contentWindow.history.forward(); } catch(e) {}
+        try { currentFrame?.frame.contentWindow.history.forward(); } catch(e) {}
     });
     document.getElementById('btn-reload').addEventListener('click', () => {
-        try { frame.contentWindow.location.reload(); } catch(e) {}
+        try { currentFrame?.frame.contentWindow.location.reload(); } catch(e) {}
     });
     document.getElementById('btn-home').addEventListener('click', showHome);
     document.getElementById('btn-retry').addEventListener('click', () => {
@@ -526,6 +542,5 @@
         card.addEventListener('click', () => navigate(card.dataset.url));
     });
 </script>
-
 </body>
 </html>
