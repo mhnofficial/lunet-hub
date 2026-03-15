@@ -1,9 +1,7 @@
-importScripts("/scram/scramjet.all.js");
+importScripts("/scram/scramjet.bundle.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
-
-scramjet.config.bare = ["https://baremux.torahanytime.com/"];
 
 self.addEventListener("fetch", (event) => {
     if (scramjet.route(event)) {
