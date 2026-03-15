@@ -1,5 +1,6 @@
-importScripts("https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.worker.js");
+importScripts("/scram/scramjet.all.js");
 
+const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
 self.addEventListener("fetch", (event) => {

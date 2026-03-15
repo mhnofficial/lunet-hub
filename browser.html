@@ -357,17 +357,17 @@
 </div>
 
 
-<script type="module">
-    import ScramjetController from "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.controller.js";
-
+<script src="/scram/scramjet.all.js"></script>
+<script>
+    const { ScramjetController } = $scramjetLoadController();
     const sj = new ScramjetController({
         prefix: "/scram/service/",
         files: {
-            wasm:   "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.wasm.js",
-            worker: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.worker.js",
-            client: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.client.js",
-            shared: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.shared.js",
-            sync:   "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/scramjet.sync.js",
+            wasm:   "/scram/e5fbf26ed3a3f41a.wasm",
+            worker: "/scram/scramjet.all.js",
+            client: "/scram/scramjet.all.js",
+            shared: "/scram/scramjet.all.js",
+            sync:   "/scram/scramjet.sync.js",
         }
     });
 
@@ -386,8 +386,9 @@
         statusDot.classList.add('online');
         swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
         statusText.textContent = 'Ready';
+        console.log('SW registered successfully');
     }).catch(e => {
-        swStatusEl.innerHTML = '<div class="status-dot"></div> SW Error: ' + e.message;
+        swStatusEl.innerHTML = '<div class="status-dot"></div> Error: ' + e.message;
         console.error('SW Error:', e);
     });
 
@@ -418,7 +419,8 @@
         statusText.textContent   = 'Loading...';
         document.getElementById('btn-back').disabled    = false;
         document.getElementById('btn-forward').disabled = false;
-        frame.src = sj.encodeUrl(url);
+        const encoded = sj.encodeUrl(url);
+        frame.src = encoded;
     }
 
     function showHome() {
