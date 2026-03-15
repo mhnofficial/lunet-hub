@@ -386,14 +386,10 @@
         statusDot.classList.add('online');
         swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
         statusText.textContent = 'Ready';
-        console.log('SW registered successfully');
 
-        // If SW just installed for first time, reload so it takes control
-        if (reg && reg.installing) {
-            reg.installing.addEventListener('statechange', function() {
-                if (this.state === 'activated') {
-                    location.reload();
-                }
+        if (!navigator.serviceWorker.controller) {
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                location.reload();
             });
         }
     }).catch(e => {
