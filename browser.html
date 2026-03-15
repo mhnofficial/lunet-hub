@@ -358,15 +358,15 @@
 
 
 <script src="/scram/scramjet.all.js"></script>
+<script src="/scram/index.js"></script>
 <script>
-    const { BareMux } = $scramjetRequire("@mercuryworkshop/bare-mux");
-    const connection = new BareMux.BareMuxConnection("/scram/baremux.worker.js");
-
     async function setupTransport() {
+        const { BareMuxConnection } = bareModule;
+        const connection = new BareMuxConnection("/scram/worker.js");
         await connection.setTransport("/scram/epoxy.js", [{ wisp: "wss://wisp.mercuryworkshop.workers.dev/" }]);
+        console.log("Transport ready");
     }
-
-    setupTransport();
+    setupTransport().catch(console.error);
 </script>
 <script>
     const { ScramjetController } = $scramjetLoadController();

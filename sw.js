@@ -1,24 +1,23 @@
 importScripts("/scram/scramjet.all.js");
+importScripts("/scram/index.js");
+
+const { BareMuxConnection } = bareModule;
+const connection = new BareMuxConnection("/scram/worker.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
-const scramjet = new ScramjetServiceWorker();
-
-self.addEventListener("install", (event) => {
-    event.waitUntil(self.skipWaiting());
+const scramjet = new ScramjetServiceWorker({
+    prefix: "/scram/service/",
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener("install", (event) => {
     event.waitUntil(
-        clients.claim().then(() => {
-            console.log('SW claimed all clients');
-        })
+        connection.setTransport("/scram/epoxy.js", [{ wisp: "wss://wisp.mercuryworkshop.workers.dev/" }])
+        .then(() => self.skipWaiting())
     );
 });
 
-self.addEventListener("message", (event) => {
-    if (event.data?.type === 'CLAIM') {
-        clients.claim();
-    }
+self.addEventListener("activate", (event) => {
+    event.waitUntil(clients.claim());
 });
 
 self.addEventListener("fetch", (event) => {
