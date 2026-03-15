@@ -357,7 +357,12 @@
 </div>
 
 
-<script src="/scram/scramjet.all.js"></script>
+<script src="/scram/scramjet.all.js"></script><script>
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('Controller changed, reloading...');
+        window.location.reload();
+    });
+</script>
 <script type="module">
     import { BareMuxConnection } from "/scram/baremux.mjs";
 
@@ -369,6 +374,151 @@
     } catch(e) {
         console.error("Transport failed:", e);
     }
+</script>
+<script src="/scram/scramjet.all.js"></script>
+<script type="module">
+    import { BareMuxConnection } from "/scram/baremux.mjs";
+
+    // Setup transport FIRST
+    const conn = new BareMuxConnection("/scram/baremux-worker.js");
+    try {
+        await conn.setTransport("/scram/epoxy.mjs", [{ wisp: "wss://wisp.mercuryworkshop.workers.dev/" }]);
+        console.log("Transport ready!");
+    } catch(e) {
+        console.error("Transport failed:", e);
+    }
+
+    // Reload when SW takes control
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('SW took control, reloading...');
+        window.location.reload();
+    });
+</script>
+<script>
+    const { ScramjetController } = $scramjetLoadController();
+    window.sj = new ScramjetController({
+        prefix: "/scram/service/",
+        files: {
+            wasm:   "/scram/e5fbf26ed3a3f41a.wasm",
+            worker: "/scram/scramjet.all.js",
+            client: "/scram/scramjet.all.js",
+            shared: "/scram/scramjet.all.js",
+            sync:   "/scram/scramjet.sync.js",
+        }
+    });
+
+    const swStatusEl = document.getElementById('sw-status');
+    const statusDot  = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+    const frame      = document.getElementById('browser-frame');
+    const urlInput   = document.getElementById('url-input');
+    const homeScreen = document.getElementById('home-screen');
+    const errorPage  = document.getElementById('error-page');
+    const loadingBar = document.getElementById('loading-bar');
+    const lockIcon   = document.getElementById('lock-icon');
+    let currentUrl   = '';
+
+    async function initProxy() {
+        try {
+            await sj.init("/sw.js");
+
+            if (!navigator.serviceWorker.controller) {
+                await new Promise(resolve => {
+                    navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true });
+                });
+            }
+
+            statusDot.classList.add('online');
+            swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
+            statusText.textContent = 'Ready';
+            console.log('SW active and controlling');
+        } catch(e) {
+            swStatusEl.innerHTML = '<div class="status-dot"></div> Error: ' + e.message;
+            console.error('SW Error:', e);
+        }
+    }
+
+    initProxy();
+
+    function formatUrl(raw) {
+        raw = raw.trim();
+        if (!raw.includes('.') || raw.includes(' ')) {
+            return 'https://www.google.com/search?q=' + encodeURIComponent(raw);
+        }
+        if (!/^https?:\/\//i.test(raw)) return 'https://' + raw;
+        return raw;
+    }
+
+    function updateLock(url) {
+        lockIcon.className = url.startsWith('https://')
+            ? 'fa-solid fa-lock lock-icon'
+            : 'fa-solid fa-lock-open lock-icon insecure';
+    }
+
+    function navigate(raw) {
+        const url = formatUrl(raw);
+        currentUrl = url;
+        urlInput.value = url;
+        updateLock(url);
+        homeScreen.style.display = 'none';
+        errorPage.style.display  = 'none';
+        frame.style.display      = 'block';
+        loadingBar.classList.add('active');
+        statusText.textContent   = 'Loading...';
+        document.getElementById('btn-back').disabled    = false;
+        document.getElementById('btn-forward').disabled = false;
+        frame.src = sj.encodeUrl(url);
+    }
+
+    function showHome() {
+        frame.style.display      = 'none';
+        errorPage.style.display  = 'none';
+        homeScreen.style.display = 'flex';
+        urlInput.value = '';
+        statusText.textContent = 'Ready';
+        document.getElementById('btn-back').disabled    = true;
+        document.getElementById('btn-forward').disabled = true;
+        lockIcon.className = 'fa-solid fa-lock lock-icon';
+    }
+
+    frame.addEventListener('load', () => {
+        loadingBar.classList.remove('active');
+        statusText.textContent = 'Done';
+        try {
+            const decoded = sj.decodeUrl(frame.contentWindow.location.href);
+            if (decoded) { urlInput.value = decoded; updateLock(decoded); }
+        } catch(e) {}
+    });
+
+    document.getElementById('btn-go').addEventListener('click', () => {
+        if (urlInput.value.trim()) navigate(urlInput.value);
+    });
+    urlInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && urlInput.value.trim()) navigate(urlInput.value);
+    });
+    document.getElementById('btn-back').addEventListener('click', () => {
+        try { frame.contentWindow.history.back(); } catch(e) {}
+    });
+    document.getElementById('btn-forward').addEventListener('click', () => {
+        try { frame.contentWindow.history.forward(); } catch(e) {}
+    });
+    document.getElementById('btn-reload').addEventListener('click', () => {
+        try { frame.contentWindow.location.reload(); } catch(e) {}
+    });
+    document.getElementById('btn-home').addEventListener('click', showHome);
+    document.getElementById('btn-retry').addEventListener('click', () => {
+        if (currentUrl) navigate(currentUrl);
+    });
+    document.getElementById('home-btn').addEventListener('click', () => {
+        const v = document.getElementById('home-input').value.trim();
+        if (v) navigate(v);
+    });
+    document.getElementById('home-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && e.target.value.trim()) navigate(e.target.value);
+    });
+    document.querySelectorAll('.site-card').forEach(card => {
+        card.addEventListener('click', () => navigate(card.dataset.url));
+    });
 </script>
 
 </body>
