@@ -360,7 +360,7 @@
 <script src="/scram/scramjet.all.js"></script>
 <script>
     const { ScramjetController } = $scramjetLoadController();
-    const sj = new ScramjetController({
+    window.sj = new ScramjetController({
         prefix: "/scram/service/",
         files: {
             wasm:   "/scram/e5fbf26ed3a3f41a.wasm",
