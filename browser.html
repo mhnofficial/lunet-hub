@@ -355,8 +355,9 @@
     <span id="sw-status"><div class="status-dot" id="status-dot"></div> Proxy offline</span>
 </div>
 
-<script type="module">
-    import { ScramjetController } from "/scram/scramjet.all.js";
+<script src="/scram/scramjet.all.js"></script>
+<script>
+    const { ScramjetController } = $scramjetLoadController();
 
     const sj = new ScramjetController({
         prefix: "/scram/service/",
@@ -379,23 +380,21 @@
     const errorPage  = document.getElementById('error-page');
     const loadingBar = document.getElementById('loading-bar');
     const lockIcon   = document.getElementById('lock-icon');
+    let currentUrl   = '';
 
-    let currentUrl = '';
-
-    try {
-        await sj.init("/sw.js");
+    sj.init("/sw.js").then(() => {
         statusDot.classList.add('online');
-        swStatusEl.innerHTML = `<div class="status-dot online"></div> Proxy active`;
+        swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
         statusText.textContent = 'Ready';
-    } catch(e) {
-        swStatusEl.innerHTML = `<div class="status-dot"></div> Proxy error — ${e.message}`;
+    }).catch(e => {
+        swStatusEl.innerHTML = '<div class="status-dot"></div> Proxy error: ' + e.message;
         console.error(e);
-    }
+    });
 
     function formatUrl(raw) {
         raw = raw.trim();
         if (!raw.includes('.') || raw.includes(' ')) {
-            return `https://www.google.com/search?q=${encodeURIComponent(raw)}`;
+            return 'https://www.google.com/search?q=' + encodeURIComponent(raw);
         }
         if (!/^https?:\/\//i.test(raw)) return 'https://' + raw;
         return raw;
@@ -412,25 +411,14 @@
         currentUrl = url;
         urlInput.value = url;
         updateLock(url);
-
         homeScreen.style.display = 'none';
         errorPage.style.display  = 'none';
         frame.style.display      = 'block';
         loadingBar.classList.add('active');
         statusText.textContent   = 'Loading...';
-
         document.getElementById('btn-back').disabled    = false;
         document.getElementById('btn-forward').disabled = false;
-
         sj.navigateTo(url, frame);
-    }
-
-    function showError(msg) {
-        frame.style.display      = 'none';
-        errorPage.style.display  = 'flex';
-        document.getElementById('error-msg').textContent = msg;
-        loadingBar.classList.remove('active');
-        statusText.textContent = 'Error';
     }
 
     function showHome() {
@@ -472,7 +460,6 @@
     document.getElementById('btn-retry').addEventListener('click', () => {
         if (currentUrl) navigate(currentUrl);
     });
-
     document.getElementById('home-btn').addEventListener('click', () => {
         const v = document.getElementById('home-input').value.trim();
         if (v) navigate(v);
@@ -480,7 +467,6 @@
     document.getElementById('home-input').addEventListener('keydown', e => {
         if (e.key === 'Enter' && e.target.value.trim()) navigate(e.target.value);
     });
-
     document.querySelectorAll('.site-card').forEach(card => {
         card.addEventListener('click', () => navigate(card.dataset.url));
     });
