@@ -393,7 +393,6 @@
                 });
             }
 
-            const wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
             if ((await connection.getTransport()) !== "/scram/epoxy.mjs") {
                 await connection.setTransport("/scram/epoxy.mjs", [{ wisp: "wss://wisp.mercuryworkshop.workers.dev/" }]);
             }
