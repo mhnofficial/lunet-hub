@@ -1,7 +1,11 @@
 importScripts("/scram/scramjet.all.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
-const scramjet = new ScramjetServiceWorker();
+const scramjet = new ScramjetServiceWorker({
+    prefix: "/scram/service/",
+    codec: "plain",
+    wasm: "/scram/e5fbf26ed3a3f41a.wasm",
+});
 
 self.addEventListener("install", (event) => {
     event.waitUntil(self.skipWaiting());
@@ -12,9 +16,7 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-    console.log("SW fetch:", event.request.url);
     if (scramjet.route(event)) {
-        console.log("SW routing:", event.request.url);
         event.respondWith(scramjet.fetch(event));
     }
 });
