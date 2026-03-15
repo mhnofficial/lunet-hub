@@ -354,10 +354,8 @@
     <span id="status-text">Ready</span>
     <span id="sw-status"><div class="status-dot" id="status-dot"></div> Proxy offline</span>
 </div>
-
+<script src="/scram/scramjet.bundle.js"></script>
 <script type="module">
-    import { ScramjetController } from "/scram/scramjet.bundle.js";
-
     const sj = new ScramjetController({
         prefix: "/scram/service/",
         files: {
@@ -369,26 +367,25 @@
         }
     });
 
-    const swStatusEl  = document.getElementById('sw-status');
-    const statusDot   = document.getElementById('status-dot');
-    const statusText  = document.getElementById('status-text');
-    const frame       = document.getElementById('browser-frame');
-    const urlInput    = document.getElementById('url-input');
-    const homeScreen  = document.getElementById('home-screen');
-    const errorPage   = document.getElementById('error-page');
-    const loadingBar  = document.getElementById('loading-bar');
-    const lockIcon    = document.getElementById('lock-icon');
+    const swStatusEl = document.getElementById('sw-status');
+    const statusDot  = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+    const frame      = document.getElementById('browser-frame');
+    const urlInput   = document.getElementById('url-input');
+    const homeScreen = document.getElementById('home-screen');
+    const errorPage  = document.getElementById('error-page');
+    const loadingBar = document.getElementById('loading-bar');
+    const lockIcon   = document.getElementById('lock-icon');
 
     let currentUrl = '';
 
-    // Register SW
     try {
         await sj.init("/sw.js");
         statusDot.classList.add('online');
         swStatusEl.innerHTML = `<div class="status-dot online"></div> Proxy active`;
         statusText.textContent = 'Ready';
     } catch(e) {
-        swStatusEl.innerHTML = `<div class="status-dot"></div> Proxy error`;
+        swStatusEl.innerHTML = `<div class="status-dot"></div> Proxy error — ${e.message}`;
         console.error(e);
     }
 
@@ -413,20 +410,16 @@
         urlInput.value = url;
         updateLock(url);
 
-        homeScreen.style.display  = 'none';
-        errorPage.style.display   = 'none';
-        frame.style.display       = 'block';
+        homeScreen.style.display = 'none';
+        errorPage.style.display  = 'none';
+        frame.style.display      = 'block';
         loadingBar.classList.add('active');
-        statusText.textContent    = `Loading...`;
+        statusText.textContent   = 'Loading...';
 
         document.getElementById('btn-back').disabled    = false;
         document.getElementById('btn-forward').disabled = false;
 
-        try {
-            sj.navigateTo(url, frame);
-        } catch(e) {
-            showError('Proxy failed to route this URL.');
-        }
+        sj.navigateTo(url, frame);
     }
 
     function showError(msg) {
@@ -482,10 +475,7 @@
         if (v) navigate(v);
     });
     document.getElementById('home-input').addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-            const v = e.target.value.trim();
-            if (v) navigate(v);
-        }
+        if (e.key === 'Enter' && e.target.value.trim()) navigate(e.target.value);
     });
 
     document.querySelectorAll('.site-card').forEach(card => {
