@@ -395,7 +395,7 @@
     });
 </script>
 <script src="/scram/scramjet.all.js"></script>
-<script src="/scram/baremux.mjs" type="module"></script>
+
 <script>
     const { ScramjetController } = $scramjetLoadController();
     window.sj = new ScramjetController({
@@ -407,7 +407,8 @@
     });
     sj.init();
 
-    const connection = new BareMux.BareMuxConnection("/scram/baremux-worker.js");
+    const { BareMuxConnection } = await import("/scram/baremux.mjs");
+    const connection = new BareMuxConnection("/scram/baremux-worker.js");
 
     const swStatusEl = document.getElementById('sw-status');
     const statusDot  = document.getElementById('status-dot');
@@ -446,7 +447,13 @@
         }
     }
 
-    initProxy();
+    (async () => {
+        const { BareMuxConnection } = await import("/scram/baremux.mjs");
+        window.connection = new BareMuxConnection("/scram/baremux-worker.js");
+        await initProxy(if ((await connection.getTransport()) !== "/scram/epoxy.mjs") {
+            await connection.setTransport("/scram/epoxy.mjs", [{ wisp: "wss://wisp.mercuryworkshop.workers.dev/" }]);
+        });
+    })();
 
     function formatUrl(raw) {
         raw = raw.trim();
