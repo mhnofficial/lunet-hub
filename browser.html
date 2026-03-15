@@ -382,11 +382,20 @@
     const lockIcon   = document.getElementById('lock-icon');
     let currentUrl   = '';
 
-    sj.init("/sw.js").then(() => {
+    sj.init("/sw.js").then((reg) => {
         statusDot.classList.add('online');
         swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
         statusText.textContent = 'Ready';
         console.log('SW registered successfully');
+
+        // If SW just installed for first time, reload so it takes control
+        if (reg && reg.installing) {
+            reg.installing.addEventListener('statechange', function() {
+                if (this.state === 'activated') {
+                    location.reload();
+                }
+            });
+        }
     }).catch(e => {
         swStatusEl.innerHTML = '<div class="status-dot"></div> Error: ' + e.message;
         console.error('SW Error:', e);
