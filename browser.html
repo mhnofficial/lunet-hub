@@ -398,6 +398,8 @@
     const { ScramjetController } = $scramjetLoadController();
     window.sj = new ScramjetController({
         prefix: "/scram/service/",
+        codec: "plain",
+        wasm: "/scram/e5fbf26ed3a3f41a.wasm",
         files: {
             wasm:   "/scram/e5fbf26ed3a3f41a.wasm",
             worker: "/scram/scramjet.all.js",
@@ -427,7 +429,11 @@
                     navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true });
                 });
             }
-
+            await sj.modifyConfig({
+                prefix: "/scram/service/",
+                codec: "plain",
+            });
+            console.log("Config after modify:", JSON.stringify(sj.config));
             statusDot.classList.add('online');
             swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
             statusText.textContent = 'Ready';
