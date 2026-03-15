@@ -382,20 +382,35 @@
     const lockIcon   = document.getElementById('lock-icon');
     let currentUrl   = '';
 
-    sj.init("/sw.js").then((reg) => {
-        statusDot.classList.add('online');
-        swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
-        statusText.textContent = 'Ready';
+    async function initProxy() {
+        try {
+            await sj.init("/sw.js");
 
-        if (!navigator.serviceWorker.controller) {
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
+            // Force the SW to take control
+            const reg = await navigator.serviceWorker.ready;
+            await reg.update();
+
+            if (!navigator.serviceWorker.controller) {
+                // SW registered but not controlling — force reload
+                await new Promise(resolve => {
+                    navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true });
+                    reg.active?.postMessage({ type: 'CLAIM' });
+                });
                 location.reload();
-            });
+                return;
+            }
+
+            statusDot.classList.add('online');
+            swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';
+            statusText.textContent = 'Ready';
+            console.log('SW active and controlling');
+        } catch(e) {
+            swStatusEl.innerHTML = '<div class="status-dot"></div> Error: ' + e.message;
+            console.error('SW Error:', e);
         }
-    }).catch(e => {
-        swStatusEl.innerHTML = '<div class="status-dot"></div> Error: ' + e.message;
-        console.error('SW Error:', e);
-    });
+    }
+
+    initProxy();
 
     function formatUrl(raw) {
         raw = raw.trim();
