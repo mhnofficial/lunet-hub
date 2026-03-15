@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunet Hub — Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #a855f7;
+      --secondary: #7c3aed;
+      --bg-dark: #09060d;
+      --surface: rgba(255,255,255,0.03);
+      --surface-border: rgba(255,255,255,0.06);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-lg: 24px;
+      --radius-md: 14px;
+      --transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background-image:
+              radial-gradient(circle at 20% 20%, rgba(168,85,247,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(124,58,237,0.06) 0%, transparent 50%);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-lg);
+      padding: 45px 40px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .logo img { border-radius: 8px; }
+    .logo h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 1.5px; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      margin-bottom: 30px;
+    }
+    .tab {
+      flex: 1; padding: 10px; border: none;
+      background: transparent; color: var(--text-muted);
+      font-family: inherit; font-size: 0.88rem; font-weight: 500;
+      border-radius: 10px; cursor: pointer; transition: var(--transition);
+    }
+    .tab.active { background: var(--primary); color: white; }
+
+    /* Form panels */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block; font-size: 0.78rem; font-weight: 600;
+      color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 8px;
+    }
+    .field .input-wrap {
+      position: relative;
+    }
+    .field .input-wrap i {
+      position: absolute; left: 16px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted); font-size: 0.85rem;
+      pointer-events: none;
+    }
+    .field input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--surface-border);
+      padding: 13px 16px 13px 42px;
+      border-radius: var(--radius-md);
+      color: white; font-family: inherit;
+      font-size: 0.9rem; outline: none;
+      transition: var(--transition);
+    }
+    .field input:focus {
+      border-color: var(--primary);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 0 0 3px rgba(168,85,247,0.1);
+    }
+    .field input::placeholder { color: rgba(255,255,255,0.2); }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: white; border: none;
+      padding: 14px; border-radius: var(--radius-md);
+      font-family: inherit; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: var(--transition);
+      margin-top: 6px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary:hover { background: var(--secondary); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .error-msg {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    .success-msg {
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.3);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #86efac;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .success-msg.show { display: block; }
+
+    .divider {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin: 22px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute; top: 50%;
+      width: 40%; height: 1px;
+      background: var(--surface-border);
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .guest-btn {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      color: var(--text-muted);
+      padding: 13px; border-radius: var(--radius-md);
+      font-family: inherit; font-size: 0.88rem; font-weight: 500;
+      cursor: pointer; transition: var(--transition);
+    }
+    .guest-btn:hover { border-color: var(--primary); color: #fff; }
+
+    .terms {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-card">
+  <div class="logo">
+    <img src="e.ico" alt="Lunet" width="30" height="30" onerror="this.style.display='none'">
+    <h1>LUNET</h1>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('login', this)">Sign In</button>
+    <button class="tab" onclick="switchTab('register', this)">Create Account</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="panel active" id="panel-login">
+    <div class="error-msg" id="login-error"></div>
+    <div class="success-msg" id="login-success"></div>
+
+    <div class="field">
+      <label>Email</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-envelope"></i>
+        <input type="email" id="login-email" placeholder="you@email.com" autocomplete="email">
+      </div>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+    </div>
+
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">
+      <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+    </button>
+
+    <div class="divider">or</div>
+    <button class="guest-btn" onclick="guestMode()">
+      <i class="fa-solid fa-user-secret"></i> Continue as Guest (15 free msgs/day)
+    </button>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="panel" id="panel-register">
+    <div class="error-msg" id="register-error"></div>
+    <div class="success-msg" id="register-success"></div>
+
+    <div class="field">
+      <label>Username</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-user"></i>
+        <input type="text" id="reg-username" placeholder="coolname" autocomplete="username">
+      </div>
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-envelope"></i>
+        <input type="email" id="reg-email" placeholder="you@email.com" autocomplete="email">
+      </div>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" id="reg-password" placeholder="min 6 characters" autocomplete="new-password">
+      </div>
+    </div>
+
+    <button class="btn-primary" id="register-btn" onclick="doRegister()">
+      <i class="fa-solid fa-user-plus"></i> Create Account
+    </button>
+
+    <div class="divider">or</div>
+    <button class="guest-btn" onclick="guestMode()">
+      <i class="fa-solid fa-user-secret"></i> Continue as Guest
+    </button>
+  </div>
+
+  <p class="terms">By continuing you agree to Lunet's terms. Payments processed securely by Stripe.</p>
+</div>
+
+<script>
+  // ---- CHANGE THIS to your auth worker URL ----
+  const AUTH_WORKER = 'https://lunet-auth.nickygomez-29.workers.dev';
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function clearMessages(...ids) {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.remove('show'); el.textContent = ''; }
+    });
+  }
+
+  async function doLogin() {
+    clearMessages('login-error', 'login-success');
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!email || !password) return showError('login-error', 'Please fill in all fields.');
+
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+
+    try {
+      const res = await fetch(AUTH_WORKER + '/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError('login-error', data.error || 'Login failed.');
+      } else {
+        localStorage.setItem('lunet_token', data.token);
+        localStorage.setItem('lunet_user', JSON.stringify(data.user));
+        localStorage.removeItem('lunet_guest');
+        const redirect = new URLSearchParams(location.search).get('redirect') || 'index.html';
+        location.href = redirect;
+      }
+    } catch {
+      showError('login-error', 'Could not reach server. Try again.');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In';
+  }
+
+  async function doRegister() {
+    clearMessages('register-error', 'register-success');
+    const username = document.getElementById('reg-username').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+
+    if (!username || !email || !password) return showError('register-error', 'Please fill in all fields.');
+
+    const btn = document.getElementById('register-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating account...';
+
+    try {
+      const res = await fetch(AUTH_WORKER + '/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError('register-error', data.error || 'Registration failed.');
+      } else {
+        localStorage.setItem('lunet_token', data.token);
+        localStorage.setItem('lunet_user', JSON.stringify(data.user));
+        localStorage.removeItem('lunet_guest');
+        const redirect = new URLSearchParams(location.search).get('redirect') || 'index.html';
+        location.href = redirect;
+      }
+    } catch {
+      showError('register-error', 'Could not reach server. Try again.');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+  }
+
+  function guestMode() {
+    localStorage.removeItem('lunet_token');
+    localStorage.removeItem('lunet_user');
+    // Mark as guest so they never get bounced back to this page
+    localStorage.setItem('lunet_guest', 'true');
+    const redirect = new URLSearchParams(location.search).get('redirect') || 'index.html';
+    location.href = redirect;
+  }
+
+  // Enter key support
+  document.addEventListener('keypress', e => {
+    if (e.key !== 'Enter') return;
+    if (document.getElementById('panel-login').classList.contains('active')) doLogin();
+    else doRegister();
+  });
+
+  // Clear guest flag when visiting auth page intentionally
+  // (only clear it after a real login/register, not on page load)
+
+  // If already logged in, redirect
+  if (localStorage.getItem('lunet_token')) {
+    localStorage.removeItem('lunet_guest');
+    const redirect = new URLSearchParams(location.search).get('redirect') || 'index.html';
+    location.href = redirect;
+  }
+</script>
+</body>
+</html>

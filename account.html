@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunet Hub — Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #a855f7;
+      --secondary: #7c3aed;
+      --bg-dark: #09060d;
+      --surface: rgba(255,255,255,0.03);
+      --surface-border: rgba(255,255,255,0.06);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-lg: 24px;
+      --radius-md: 14px;
+      --transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image:
+              radial-gradient(circle at 20% 20%, rgba(168,85,247,0.05) 0%, transparent 40%),
+              radial-gradient(circle at 80% 80%, rgba(124,58,237,0.05) 0%, transparent 40%);
+    }
+
+    nav {
+      width:100%; height:70px;
+      background: rgba(9,6,13,0.7); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--surface-border);
+      display:flex; justify-content:space-between; align-items:center;
+      padding: 0 40px; position:fixed; top:0; z-index:1000;
+    }
+    .logo-area { display:flex; align-items:center; gap:12px; }
+    .logo-area h1 { font-size:1.2rem; font-weight:700; letter-spacing:1px; }
+    .nav-links { list-style:none; display:flex; gap:5px; }
+    .nav-links a {
+      display:flex; align-items:center; gap:8px;
+      padding:10px 15px; color:var(--text-muted);
+      text-decoration:none; border-radius:var(--radius-md);
+      font-size:0.85rem; font-weight:500; transition:var(--transition);
+    }
+    .nav-links a:hover, .nav-links a.active { background:var(--surface); color:#fff; }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 100px 20px 40px;
+    }
+
+    h2 { font-size:1.6rem; font-weight:700; margin-bottom:30px; }
+
+    /* Plan Badge */
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 30px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .plan-card.premium { border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.06); }
+    .plan-card.cheat { border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.05); }
+
+    .plan-info h3 { font-size:1.1rem; font-weight:600; margin-bottom:4px; }
+    .plan-info p { font-size:0.85rem; color:var(--text-muted); }
+
+    .plan-badge {
+      padding: 6px 16px; border-radius:100px;
+      font-size:0.8rem; font-weight:600;
+    }
+    .badge-free    { background:rgba(255,255,255,0.07); color:var(--text-muted); }
+    .badge-premium { background:rgba(168,85,247,0.2); color:#d8b4fe; }
+    .badge-cheat   { background:rgba(251,191,36,0.2); color:#fcd34d; }
+
+    .btn-upgrade {
+      background: var(--primary); color:white; border:none;
+      padding:10px 22px; border-radius:var(--radius-md);
+      font-family:inherit; font-size:0.88rem; font-weight:600;
+      cursor:pointer; transition:var(--transition); text-decoration:none;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .btn-upgrade:hover { background:var(--secondary); }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background:var(--surface);
+      border:1px solid var(--surface-border);
+      border-radius:var(--radius-md);
+      padding:20px;
+      text-align:center;
+    }
+    .stat-card .num { font-size:1.8rem; font-weight:700; color:var(--primary); }
+    .stat-card .lbl { font-size:0.78rem; color:var(--text-muted); margin-top:4px; }
+
+    /* History tabs */
+    .section-header {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:16px;
+    }
+    .section-header h3 { font-size:1rem; font-weight:600; }
+
+    .hist-tabs {
+      display:flex; gap:6px;
+    }
+    .hist-tab {
+      padding:6px 14px; border-radius:100px;
+      border:1px solid var(--surface-border);
+      background:var(--surface); color:var(--text-muted);
+      font-family:inherit; font-size:0.8rem; cursor:pointer; transition:var(--transition);
+    }
+    .hist-tab.active { border-color:var(--primary); color:#fff; background:rgba(168,85,247,0.15); }
+
+    .history-list {
+      background:var(--surface);
+      border:1px solid var(--surface-border);
+      border-radius:var(--radius-lg);
+      overflow:hidden;
+      margin-bottom:24px;
+    }
+    .hist-item {
+      display:flex; align-items:center; gap:16px;
+      padding:16px 20px;
+      border-bottom:1px solid var(--surface-border);
+      transition:var(--transition);
+    }
+    .hist-item:last-child { border-bottom:none; }
+    .hist-item:hover { background:rgba(255,255,255,0.02); }
+    .hist-icon {
+      width:38px; height:38px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1rem; flex-shrink:0;
+    }
+    .hist-icon.movie  { background:rgba(239,68,68,0.15); color:#f87171; }
+    .hist-icon.game   { background:rgba(34,197,94,0.15); color:#4ade80; }
+    .hist-icon.chat   { background:rgba(168,85,247,0.15); color:#c084fc; }
+    .hist-item .info h4 { font-size:0.9rem; font-weight:500; }
+    .hist-item .info p  { font-size:0.78rem; color:var(--text-muted); margin-top:2px; }
+    .hist-item .time    { font-size:0.75rem; color:var(--text-muted); margin-left:auto; white-space:nowrap; }
+
+    .empty-state {
+      text-align:center; padding:40px 20px;
+      color:var(--text-muted); font-size:0.9rem;
+    }
+
+    /* Secret code section */
+    .secret-section {
+      background:rgba(251,191,36,0.04);
+      border:1px solid rgba(251,191,36,0.15);
+      border-radius:var(--radius-lg);
+      padding:24px;
+      margin-bottom:24px;
+    }
+    .secret-section h3 { font-size:0.95rem; font-weight:600; margin-bottom:6px; }
+    .secret-section p  { font-size:0.83rem; color:var(--text-muted); margin-bottom:16px; }
+    .secret-input-row { display:flex; gap:10px; }
+    .secret-input-row input {
+      flex:1; background:rgba(255,255,255,0.04);
+      border:1px solid rgba(251,191,36,0.2);
+      padding:11px 16px; border-radius:var(--radius-md);
+      color:white; font-family:inherit; font-size:0.9rem; outline:none;
+      transition:var(--transition);
+    }
+    .secret-input-row input:focus { border-color:#fbbf24; }
+    .secret-input-row button {
+      background:#fbbf24; color:#000; border:none;
+      padding:11px 20px; border-radius:var(--radius-md);
+      font-family:inherit; font-size:0.88rem; font-weight:600;
+      cursor:pointer; transition:var(--transition); white-space:nowrap;
+    }
+    .secret-input-row button:hover { background:#f59e0b; }
+    .secret-msg { margin-top:10px; font-size:0.83rem; display:none; }
+    .secret-msg.ok  { color:#4ade80; display:block; }
+    .secret-msg.err { color:#f87171; display:block; }
+
+    /* Secret code MODAL (keyboard shortcut) */
+    .secret-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.85); backdrop-filter:blur(12px);
+      z-index:3000; align-items:center; justify-content:center;
+    }
+    .secret-overlay.open { display:flex; }
+    .secret-modal {
+      background:#0f0a1a;
+      border:1px solid rgba(251,191,36,0.3);
+      border-radius:var(--radius-lg);
+      padding:40px;
+      width:90%; max-width:440px;
+      text-align:center;
+      animation: fadeUp 0.3s ease forwards;
+    }
+    .secret-modal .cat { font-size:3rem; margin-bottom:16px; }
+    .secret-modal h3 { font-size:1.2rem; margin-bottom:8px; }
+    .secret-modal p { font-size:0.85rem; color:var(--text-muted); margin-bottom:24px; }
+    .secret-modal input {
+      width:100%; background:rgba(255,255,255,0.05);
+      border:1px solid rgba(251,191,36,0.3);
+      padding:14px 18px; border-radius:var(--radius-md);
+      color:white; font-family:inherit; font-size:1rem;
+      text-align:center; outline:none; margin-bottom:14px;
+      transition:var(--transition); letter-spacing:1px;
+    }
+    .secret-modal input:focus { border-color:#fbbf24; }
+    .secret-modal .modal-btns { display:flex; gap:10px; }
+    .secret-modal .btn-enter {
+      flex:1; background:#fbbf24; color:#000; border:none;
+      padding:13px; border-radius:var(--radius-md);
+      font-family:inherit; font-size:0.95rem; font-weight:700;
+      cursor:pointer; transition:var(--transition);
+    }
+    .secret-modal .btn-enter:hover { background:#f59e0b; }
+    .secret-modal .btn-close {
+      background:rgba(255,255,255,0.05); color:var(--text-muted);
+      border:1px solid var(--surface-border); padding:13px 18px;
+      border-radius:var(--radius-md); font-family:inherit;
+      cursor:pointer; transition:var(--transition);
+    }
+    .secret-modal .btn-close:hover { color:#fff; }
+    .modal-msg { font-size:0.85rem; margin-top:12px; display:none; }
+    .modal-msg.ok  { color:#4ade80; display:block; }
+    .modal-msg.err { color:#f87171; display:block; }
+
+    /* Logout */
+    .logout-btn {
+      background:rgba(239,68,68,0.1); color:#f87171;
+      border:1px solid rgba(239,68,68,0.2);
+      padding:10px 20px; border-radius:var(--radius-md);
+      font-family:inherit; font-size:0.88rem; cursor:pointer; transition:var(--transition);
+    }
+    .logout-btn:hover { background:rgba(239,68,68,0.2); }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    @media (max-width:600px) {
+      nav { padding:0 16px; }
+      .nav-links span { display:none; }
+      main { padding:90px 14px 30px; }
+      .plan-card { flex-direction:column; align-items:flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo-area">
+    <img src="e.ico" alt="Lunet" width="32" height="32" onerror="this.style.display='none'">
+    <h1>LUNET</h1>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="games.html">Arcade</a></li>
+    <li><a href="ai.html">Timothy AI</a></li>
+    <li><a href="enter/enter.html"><i class="fa-solid fa-tv"></i> <span>Streaming</span></a></li>
+    <li><a href="account.html" class="active"><i class="fa-solid fa-user"></i> <span>Account</span></a></li>
+  </ul>
+</nav>
+
+<main>
+  <h2>My Account</h2>
+
+  <!-- Plan Card -->
+  <div class="plan-card" id="planCard">
+    <div class="plan-info">
+      <h3 id="planName">Free Plan</h3>
+      <p id="planDesc">15 AI messages/day • ChatGPT only • No movies or games</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span class="plan-badge badge-free" id="planBadge">FREE</span>
+      <a href="pricing.html" class="btn-upgrade"><i class="fa-solid fa-bolt"></i> Upgrade</a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="num" id="statMsgs">—</div>
+      <div class="lbl">AI msgs today</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statMovies">—</div>
+      <div class="lbl">Movies watched</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statGames">—</div>
+      <div class="lbl">Games played</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statChats">—</div>
+      <div class="lbl">Chat sessions</div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="section-header">
+    <h3>Recent Activity</h3>
+    <div class="hist-tabs">
+      <button class="hist-tab active" onclick="loadHistory('all', this)">All</button>
+      <button class="hist-tab" onclick="loadHistory('movie', this)">Movies</button>
+      <button class="hist-tab" onclick="loadHistory('game', this)">Games</button>
+      <button class="hist-tab" onclick="loadHistory('chat', this)">Chats</button>
+    </div>
+  </div>
+
+  <div class="history-list" id="historyList">
+    <div class="empty-state"><i class="fa-solid fa-clock-rotate-left" style="font-size:1.5rem;margin-bottom:10px;display:block;opacity:0.3"></i>Loading history...</div>
+  </div>
+
+  <!-- Secret Code (visible section) -->
+  <div class="secret-section">
+    <h3>🐱 Secret Code</h3>
+    <p>Got a code? Enter it here for special perks. Or press <strong style="color:#fbbf24">; / .</strong> all at once.</p>
+    <div class="secret-input-row">
+      <input type="text" id="secretInput" placeholder="enter your code..." autocomplete="off">
+      <button onclick="redeemCode()">Redeem</button>
+    </div>
+    <div class="secret-msg" id="secretMsg"></div>
+  </div>
+
+  <!-- Account actions -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:0.85rem;color:var(--text-muted);">Signed in as <strong id="userDisplay" style="color:#fff">—</strong></p>
+    </div>
+    <button class="logout-btn" id="logoutBtn" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
+</main>
+
+<!-- SECRET CODE MODAL (keyboard shortcut) -->
+<div class="secret-overlay" id="secretOverlay">
+  <div class="secret-modal">
+    <div class="cat">🐱</div>
+    <h3>Secret Code Entry</h3>
+    <p>You found the hidden shortcut. Enter the code to unlock special perks.</p>
+    <input type="text" id="modalCodeInput" placeholder="type the secret phrase..." autocomplete="off">
+    <div class="modal-btns">
+      <button class="btn-close" onclick="closeSecretModal()">Cancel</button>
+      <button class="btn-enter" onclick="redeemModalCode()">Unlock</button>
+    </div>
+    <div class="modal-msg" id="modalMsg"></div>
+  </div>
+</div>
+
+<script>
+  const AUTH_WORKER = 'https://lunet-auth.nickygomez-29.workers.dev';
+
+  // ---- Auth check — guest mode stays as guest, no redirect ----
+  const token = localStorage.getItem('lunet_token');
+  const userRaw = localStorage.getItem('lunet_user');
+  const isGuest = localStorage.getItem('lunet_guest') === 'true';
+  let user = userRaw ? JSON.parse(userRaw) : null;
+
+  // Only redirect if not logged in AND not a guest
+  if (!token && !isGuest) {
+    location.href = 'auth.html?redirect=account.html';
+  }
+
+  function authHeaders() {
+    return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (token || '') };
+  }
+
+  // ---- Load fresh user data ----
+  async function loadUser() {
+    if (isGuest && !token) {
+      // Guest mode — show limited info, no server call
+      renderPlan({ subscription: 'free' });
+      document.getElementById('userDisplay').textContent = 'Browsing as Guest';
+      document.getElementById('logoutBtn').innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In / Register';
+      document.getElementById('logoutBtn').onclick = () => location.href = 'auth.html';
+      document.querySelector('.secret-section').style.display = 'none';
+      return;
+    }
+
+    try {
+      const res = await fetch(AUTH_WORKER + '/auth/me', { headers: authHeaders() });
+      if (!res.ok) {
+        // Token expired — drop to guest instead of hard redirect
+        localStorage.removeItem('lunet_token');
+        localStorage.removeItem('lunet_user');
+        localStorage.setItem('lunet_guest', 'true');
+        renderPlan({ subscription: 'free' });
+        document.getElementById('userDisplay').textContent = 'Browsing as Guest';
+        document.getElementById('logoutBtn').innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In / Register';
+        document.getElementById('logoutBtn').onclick = () => location.href = 'auth.html';
+        return;
+      }
+      const data = await res.json();
+      user = data.user;
+      localStorage.setItem('lunet_user', JSON.stringify(user));
+      renderPlan(user);
+      document.getElementById('userDisplay').textContent = user.username + ' · ' + user.email;
+    } catch {}
+  }
+
+  function renderPlan(u) {
+    const planCard = document.getElementById('planCard');
+    const planName = document.getElementById('planName');
+    const planDesc = document.getElementById('planDesc');
+    const planBadge = document.getElementById('planBadge');
+
+    const descs = {
+      free:   '15 AI messages/day • ChatGPT only • No streaming or games',
+      movies: 'All streaming • 15 AI messages/day • ChatGPT only',
+      games:  'All arcade games • 15 AI messages/day • ChatGPT only',
+      ai_pro: 'All AI models • Unlimited messages • No streaming or games',
+      bundle: '🎉 Everything — AI Pro + Movies + Games',
+      cheat:  '🐱 Secret unlock active — everything free for 24hrs!',
+    };
+    const labels = {
+      free:'FREE', movies:'MOVIES', games:'GAMES',
+      ai_pro:'AI PRO', bundle:'BUNDLE', cheat:'SECRET'
+    };
+
+    const sub = u.subscription || 'free';
+    planName.textContent = { free:'Free Plan', movies:'Movies Plan', games:'Games Plan', ai_pro:'AI Pro Plan', bundle:'Bundle Plan', cheat:'Secret Day' }[sub] || 'Free Plan';
+    planDesc.textContent = descs[sub] || descs.free;
+    planBadge.textContent = labels[sub] || 'FREE';
+
+    planCard.className = 'plan-card' + (sub !== 'free' ? (sub === 'cheat' ? ' cheat' : ' premium') : '');
+    planBadge.className = 'plan-badge ' + (sub === 'free' ? 'badge-free' : sub === 'cheat' ? 'badge-cheat' : 'badge-premium');
+
+    if (sub !== 'free' && u.sub_expires) {
+      const d = new Date(u.sub_expires);
+      planDesc.textContent += ' · Expires ' + d.toLocaleDateString();
+    }
+  }
+
+  // ---- Load history ----
+  let currentHistType = 'all';
+
+  async function loadHistory(type, btn) {
+    currentHistType = type;
+    if (btn) {
+      document.querySelectorAll('.hist-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    const list = document.getElementById('historyList');
+    list.innerHTML = '<div class="empty-state">Loading...</div>';
+
+    // Guests have no server history
+    if (isGuest && !token) {
+      list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-user-secret" style="font-size:1.5rem;margin-bottom:10px;display:block;opacity:0.3"></i>Sign in to save and view your history.</div>';
+      document.getElementById('statMovies').textContent = '—';
+      document.getElementById('statGames').textContent = '—';
+      document.getElementById('statChats').textContent = '—';
+      return;
+    }
+
+    try {
+      const url = AUTH_WORKER + '/history/get?limit=30' + (type !== 'all' ? '&type=' + type : '');
+      const res = await fetch(url, { headers: authHeaders() });
+      const data = await res.json();
+
+      if (!data.history || data.history.length === 0) {
+        list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-inbox" style="font-size:1.5rem;margin-bottom:10px;display:block;opacity:0.3"></i>Nothing here yet.</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      data.history.forEach(item => {
+        const iconMap = { movie:'fa-film', game:'fa-gamepad', chat:'fa-message' };
+        const d = item.data;
+        const title = d.title || d.name || d.model || 'Unknown';
+        const sub = d.subtitle || d.genre || d.preview || '';
+        const time = timeAgo(item.created_at);
+
+        list.innerHTML += `
+                    <div class="hist-item">
+                        <div class="hist-icon ${item.type}"><i class="fa-solid ${iconMap[item.type] || 'fa-clock'}"></i></div>
+                        <div class="info">
+                            <h4>${title}</h4>
+                            ${sub ? `<p>${sub}</p>` : ''}
+                        </div>
+                        <span class="time">${time}</span>
+                    </div>`;
+      });
+
+      // Update stats
+      const all = await (await fetch(AUTH_WORKER + '/history/get?limit=1000', { headers: authHeaders() })).json();
+      if (all.history) {
+        const movies = all.history.filter(h => h.type === 'movie').length;
+        const games  = all.history.filter(h => h.type === 'game').length;
+        const chats  = all.history.filter(h => h.type === 'chat').length;
+        document.getElementById('statMovies').textContent = movies;
+        document.getElementById('statGames').textContent  = games;
+        document.getElementById('statChats').textContent  = chats;
+      }
+
+    } catch {
+      list.innerHTML = '<div class="empty-state">Could not load history.</div>';
+    }
+  }
+
+  // AI msgs today (from localStorage counter)
+  const todayKey = 'lunet_used_' + new Date().toISOString().slice(0, 10);
+  document.getElementById('statMsgs').textContent = localStorage.getItem(todayKey) || '0';
+
+  // ---- Secret code ----
+  async function redeemCode(codeOverride) {
+    const input = codeOverride || document.getElementById('secretInput').value.trim();
+    if (!input) return;
+
+    try {
+      const res = await fetch(AUTH_WORKER + '/auth/secret', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ code: input })
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        showSecretMsg('secretMsg', data.message, true);
+        user.subscription = 'cheat';
+        renderPlan(user);
+        return true;
+      } else {
+        showSecretMsg('secretMsg', data.error, false);
+        return false;
+      }
+    } catch {
+      showSecretMsg('secretMsg', 'Could not reach server.', false);
+      return false;
+    }
+  }
+
+  function showSecretMsg(id, msg, ok) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = 'secret-msg ' + (ok ? 'ok' : 'err');
+  }
+
+  // ---- Secret modal (keyboard shortcut) ----
+  let keysHeld = new Set();
+  document.addEventListener('keydown', e => {
+    keysHeld.add(e.key);
+    // Trigger on ; / . all pressed at the same time
+    if (keysHeld.has(';') && keysHeld.has('/') && keysHeld.has('.')) {
+      e.preventDefault();
+      openSecretModal();
+    }
+  });
+  document.addEventListener('keyup', e => keysHeld.delete(e.key));
+
+  function openSecretModal() {
+    document.getElementById('secretOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('modalCodeInput').focus(), 100);
+  }
+
+  function closeSecretModal() {
+    document.getElementById('secretOverlay').classList.remove('open');
+    document.getElementById('modalCodeInput').value = '';
+    document.getElementById('modalMsg').className = 'modal-msg';
+  }
+
+  async function redeemModalCode() {
+    const code = document.getElementById('modalCodeInput').value.trim();
+    const msgEl = document.getElementById('modalMsg');
+    if (!code) return;
+
+    const res = await fetch(AUTH_WORKER + '/auth/secret', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ code })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      msgEl.textContent = data.message;
+      msgEl.className = 'modal-msg ok';
+      user.subscription = 'cheat';
+      renderPlan(user);
+      setTimeout(closeSecretModal, 2500);
+    } else {
+      msgEl.textContent = data.error;
+      msgEl.className = 'modal-msg err';
+    }
+  }
+
+  document.getElementById('modalCodeInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') redeemModalCode();
+  });
+
+  // ---- Logout ----
+  async function doLogout() {
+    await fetch(AUTH_WORKER + '/auth/logout', { method: 'POST', headers: authHeaders() }).catch(() => {});
+    localStorage.removeItem('lunet_token');
+    localStorage.removeItem('lunet_user');
+    // Set guest flag so they stay on-site as a guest instead of being booted to login
+    localStorage.setItem('lunet_guest', 'true');
+    location.href = 'index.html';
+  }
+
+  // ---- Helpers ----
+  function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    if (diff < 60000)   return 'just now';
+    if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
+    if (diff < 86400000)return Math.floor(diff/3600000) + 'h ago';
+    return Math.floor(diff/86400000) + 'd ago';
+  }
+
+  // ---- Init ----
+  loadUser();
+  loadHistory('all');
+</script>
+</body>
+</html>

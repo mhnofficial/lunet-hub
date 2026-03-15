@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunet Hub — Pricing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #a855f7;
+      --secondary: #7c3aed;
+      --bg-dark: #09060d;
+      --surface: rgba(255,255,255,0.03);
+      --surface-border: rgba(255,255,255,0.06);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-lg: 24px;
+      --radius-md: 14px;
+      --transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-dark); color: var(--text-main);
+      min-height:100vh;
+      background-image:
+              radial-gradient(circle at 20% 20%, rgba(168,85,247,0.07) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(124,58,237,0.05) 0%, transparent 50%);
+    }
+
+    nav {
+      width:100%; height:70px;
+      background:rgba(9,6,13,0.7); backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--surface-border);
+      display:flex; justify-content:space-between; align-items:center;
+      padding:0 40px; position:fixed; top:0; z-index:1000;
+    }
+    .logo-area { display:flex; align-items:center; gap:12px; }
+    .logo-area h1 { font-size:1.2rem; font-weight:700; letter-spacing:1px; }
+    .nav-links { list-style:none; display:flex; gap:5px; }
+    .nav-links a {
+      display:flex; align-items:center; gap:8px; padding:10px 15px;
+      color:var(--text-muted); text-decoration:none; border-radius:var(--radius-md);
+      font-size:0.85rem; font-weight:500; transition:var(--transition);
+    }
+    .nav-links a:hover, .nav-links a.active { background:var(--surface); color:#fff; }
+
+    main { max-width:960px; margin:0 auto; padding:110px 20px 60px; }
+
+    .hero { text-align:center; margin-bottom:50px; }
+    .hero h1 { font-size:2.4rem; font-weight:800; margin-bottom:12px; }
+    .hero h1 span { background:linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .hero p { color:var(--text-muted); font-size:1rem; max-width:500px; margin:0 auto; line-height:1.7; }
+
+    /* Plans grid */
+    .plans-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap:16px;
+      margin-bottom:30px;
+    }
+
+    .plan-card {
+      background:var(--surface);
+      border:1px solid var(--surface-border);
+      border-radius:var(--radius-lg);
+      padding:28px 22px;
+      display:flex; flex-direction:column; gap:16px;
+      transition:var(--transition);
+      position:relative; overflow:hidden;
+    }
+    .plan-card:hover { border-color:rgba(168,85,247,0.3); transform:translateY(-3px); }
+    .plan-card.featured {
+      border-color:rgba(168,85,247,0.5);
+      background:rgba(168,85,247,0.07);
+    }
+    .plan-card.featured::before {
+      content:'BEST VALUE';
+      position:absolute; top:14px; right:-28px;
+      background:var(--primary); color:white;
+      font-size:0.62rem; font-weight:700; letter-spacing:1px;
+      padding:4px 40px; transform:rotate(45deg);
+    }
+
+    .plan-icon { font-size:1.8rem; }
+    .plan-name { font-size:1rem; font-weight:700; }
+    .plan-price {
+      display:flex; align-items:baseline; gap:4px;
+    }
+    .plan-price .amount { font-size:2rem; font-weight:800; color:var(--primary); }
+    .plan-price .period { font-size:0.85rem; color:var(--text-muted); }
+    .plan-price .once { font-size:0.75rem; color:var(--text-muted); margin-left:4px; }
+
+    .plan-features { list-style:none; display:flex; flex-direction:column; gap:9px; flex:1; }
+    .plan-features li {
+      font-size:0.83rem; color:var(--text-muted);
+      display:flex; align-items:center; gap:8px;
+    }
+    .plan-features li i { color:var(--primary); width:14px; flex-shrink:0; }
+    .plan-features li.no { color:rgba(255,255,255,0.2); }
+    .plan-features li.no i { color:rgba(255,255,255,0.15); }
+
+    .plan-btn {
+      width:100%; background:var(--primary); color:white; border:none;
+      padding:12px; border-radius:var(--radius-md);
+      font-family:inherit; font-size:0.9rem; font-weight:600;
+      cursor:pointer; transition:var(--transition);
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .plan-btn:hover { background:var(--secondary); }
+    .plan-btn.outline {
+      background:transparent; border:1px solid var(--surface-border); color:var(--text-muted);
+    }
+    .plan-btn.outline:hover { border-color:var(--primary); color:#fff; background:rgba(168,85,247,0.1); }
+
+    /* Bundle highlight */
+    .bundle-card {
+      background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(124,58,237,0.08));
+      border: 1px solid rgba(168,85,247,0.4);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:24px; flex-wrap:wrap;
+      margin-bottom:30px;
+    }
+    .bundle-left h2 { font-size:1.4rem; font-weight:800; margin-bottom:6px; }
+    .bundle-left p  { font-size:0.88rem; color:var(--text-muted); }
+    .bundle-price {
+      text-align:center;
+    }
+    .bundle-price .big { font-size:3rem; font-weight:800; color:var(--primary); line-height:1; }
+    .bundle-price .sub { font-size:0.8rem; color:var(--text-muted); }
+    .bundle-price .save { font-size:0.75rem; color:#4ade80; margin-top:4px; }
+
+    /* FAQ */
+    .faq { margin-top:40px; }
+    .faq h2 { font-size:1.1rem; font-weight:700; margin-bottom:20px; }
+    .faq-item {
+      background:var(--surface); border:1px solid var(--surface-border);
+      border-radius:var(--radius-md); padding:16px 20px; margin-bottom:10px;
+    }
+    .faq-item h4 { font-size:0.9rem; font-weight:600; margin-bottom:6px; }
+    .faq-item p  { font-size:0.83rem; color:var(--text-muted); line-height:1.6; }
+
+    @media (max-width:600px) {
+      nav { padding:0 16px; }
+      .nav-links span { display:none; }
+      .hero h1 { font-size:1.8rem; }
+      .bundle-card { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo-area">
+    <img src="e.ico" alt="Lunet" width="32" height="32" onerror="this.style.display='none'">
+    <h1>LUNET</h1>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="games.html">Arcade</a></li>
+    <li><a href="ai.html">Timothy AI</a></li>
+    <li><a href="enter/enter.html"><i class="fa-solid fa-tv"></i> <span>Streaming</span></a></li>
+    <li><a href="account.html"><i class="fa-solid fa-user"></i> <span>Account</span></a></li>
+  </ul>
+</nav>
+
+<main>
+  <div class="hero">
+    <h1>Simple, <span>honest</span> pricing.</h1>
+    <p>Start free, upgrade for what you actually want. Cancel anytime — your subscription lasts a full month.</p>
+  </div>
+
+  <!-- Bundle highlight -->
+  <div class="bundle-card">
+    <div class="bundle-left">
+      <h2>🎯 The Everything Bundle</h2>
+      <p>All streaming · All games · All AI models · Unlimited messages<br>One payment, one month, no surprises.</p>
+      <ul style="list-style:none;display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
+        <li style="font-size:0.82rem;color:#c084fc;"><i class="fa-solid fa-check" style="margin-right:6px"></i>All Movies & TV</li>
+        <li style="font-size:0.82rem;color:#c084fc;"><i class="fa-solid fa-check" style="margin-right:6px"></i>All Arcade Games</li>
+        <li style="font-size:0.82rem;color:#c084fc;"><i class="fa-solid fa-check" style="margin-right:6px"></i>Claude + Gemini + ChatGPT</li>
+        <li style="font-size:0.82rem;color:#c084fc;"><i class="fa-solid fa-check" style="margin-right:6px"></i>Unlimited AI messages</li>
+      </ul>
+    </div>
+    <div>
+      <div class="bundle-price">
+        <div class="big">$10</div>
+        <div class="sub">per month</div>
+        <div class="save">Save $2 vs. buying separate</div>
+      </div>
+      <button class="plan-btn" onclick="checkout('bundle')" style="margin-top:16px;min-width:180px;">
+        <i class="fa-solid fa-bolt"></i> Get Everything — $10/mo
+      </button>
+    </div>
+  </div>
+
+  <!-- Individual plans -->
+  <div class="plans-grid">
+
+    <!-- Free -->
+    <div class="plan-card">
+      <div class="plan-icon">🆓</div>
+      <div class="plan-name">Free</div>
+      <div class="plan-price"><span class="amount">$0</span><span class="period">/mo</span></div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check"></i> ChatGPT only</li>
+        <li><i class="fa-solid fa-check"></i> 15 messages/day</li>
+        <li><i class="fa-solid fa-check"></i> Add your own API keys</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No streaming</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No arcade games</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No Claude or Gemini</li>
+      </ul>
+      <button class="plan-btn outline" onclick="location.href='index.html'">Current Plan</button>
+    </div>
+
+    <!-- Movies -->
+    <div class="plan-card">
+      <div class="plan-icon">🎬</div>
+      <div class="plan-name">Movies</div>
+      <div class="plan-price"><span class="amount">$5</span><span class="period">/mo</span></div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check"></i> All streaming content</li>
+        <li><i class="fa-solid fa-check"></i> ChatGPT — 15 msgs/day</li>
+        <li><i class="fa-solid fa-check"></i> Add your own API keys</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No arcade games</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No Claude or Gemini</li>
+      </ul>
+      <button class="plan-btn" onclick="checkout('movies')">
+        <i class="fa-solid fa-play"></i> Get Movies — $5/mo
+      </button>
+    </div>
+
+    <!-- Games -->
+    <div class="plan-card">
+      <div class="plan-icon">🎮</div>
+      <div class="plan-name">Games</div>
+      <div class="plan-price"><span class="amount">$3</span><span class="period">/mo</span></div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check"></i> All arcade games</li>
+        <li><i class="fa-solid fa-check"></i> ChatGPT — 15 msgs/day</li>
+        <li><i class="fa-solid fa-check"></i> Add your own API keys</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No streaming</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No Claude or Gemini</li>
+      </ul>
+      <button class="plan-btn" onclick="checkout('games')">
+        <i class="fa-solid fa-gamepad"></i> Get Games — $3/mo
+      </button>
+    </div>
+
+    <!-- AI Pro -->
+    <div class="plan-card featured">
+      <div class="plan-icon">🤖</div>
+      <div class="plan-name">AI Pro</div>
+      <div class="plan-price"><span class="amount">$4</span><span class="period">/mo</span></div>
+      <ul class="plan-features">
+        <li><i class="fa-solid fa-check"></i> Claude (Anthropic)</li>
+        <li><i class="fa-solid fa-check"></i> Gemini (Google)</li>
+        <li><i class="fa-solid fa-check"></i> ChatGPT (OpenAI)</li>
+        <li><i class="fa-solid fa-check"></i> Unlimited messages</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No streaming</li>
+        <li class="no"><i class="fa-solid fa-xmark"></i> No arcade games</li>
+      </ul>
+      <button class="plan-btn" onclick="checkout('ai_pro')">
+        <i class="fa-solid fa-brain"></i> Get AI Pro — $4/mo
+      </button>
+    </div>
+
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h2>Questions</h2>
+    <div class="faq-item">
+      <h4>How does billing work?</h4>
+      <p>You pay once and it's active for 30 days. After that it returns to the free tier — no automatic charges. You choose when to renew.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Can I still use my own API keys on a paid plan?</h4>
+      <p>Yes. Your own API keys always work on any plan. The paid AI Pro plan just also gives you access to all models using Lunet's site keys.</p>
+    </div>
+    <div class="faq-item">
+      <h4>How does payment reach you?</h4>
+      <p>Payments go through Stripe and are deposited directly to your connected bank account or debit card.</p>
+    </div>
+    <div class="faq-item">
+      <h4>What if I want to cancel?</h4>
+      <p>Since it's not an auto-renewing subscription, you just don't repurchase when your month ends. Your plan downgrades to free automatically.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  const AUTH_WORKER = 'https://lunet-auth.nickygomez-29.workers.dev';
+
+  async function checkout(plan) {
+    const token = localStorage.getItem('lunet_token');
+    if (!token) {
+      location.href = 'auth.html?redirect=pricing.html';
+      return;
+    }
+
+    const btn = event.currentTarget;
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+
+    try {
+      const res = await fetch(AUTH_WORKER + '/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({
+          plan,
+          successUrl: location.origin + '/account.html',
+          cancelUrl: location.href
+        })
+      });
+      const data = await res.json();
+
+      if (data.url) {
+        location.href = data.url;
+      } else {
+        alert(data.error || 'Checkout failed. Make sure Stripe is configured in your Worker.');
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    } catch {
+      alert('Could not reach server.');
+      btn.disabled = false;
+      btn.innerHTML = original;
+    }
+  }
+</script>
+</body>
+</html>
