@@ -1,19 +1,10 @@
 importScripts("/scram/scramjet.all.js");
-importScripts("/scram/index.js");
-
-const { BareMuxConnection } = bareModule;
-const connection = new BareMuxConnection("/scram/worker.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
-const scramjet = new ScramjetServiceWorker({
-    prefix: "/scram/service/",
-});
+const scramjet = new ScramjetServiceWorker();
 
 self.addEventListener("install", (event) => {
-    event.waitUntil(
-        connection.setTransport("/scram/epoxy.js", [{ wisp: "wss://wisp.mercuryworkshop.workers.dev/" }])
-        .then(() => self.skipWaiting())
-    );
+    event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
