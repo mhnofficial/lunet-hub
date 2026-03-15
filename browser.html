@@ -354,16 +354,18 @@
     <span id="status-text">Ready</span>
     <span id="sw-status"><div class="status-dot" id="status-dot"></div> Proxy offline</span>
 </div>
-<script src="/scram/scramjet.bundle.js"></script>
+
 <script type="module">
+    import { ScramjetController } from "/scram/scramjet.all.js";
+
     const sj = new ScramjetController({
         prefix: "/scram/service/",
         bare: ["https://baremux.torahanytime.com/"],
         files: {
             wasm:   "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.0-alpha/dist/e5fbf26ed3a3f41a.wasm",
-            worker: "/scram/scramjet.bundle.js",
-            client: "/scram/scramjet.bundle.js",
-            shared: "/scram/scramjet.bundle.js",
+            worker: "/scram/scramjet.all.js",
+            client: "/scram/scramjet.all.js",
+            shared: "/scram/scramjet.all.js",
             sync:   "/scram/scramjet.sync.js",
         }
     });
