@@ -1,0 +1,8 @@
+/*
+  Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; frame-src https:; img-src https: data:; connect-src https:;
+  X-Frame-Options: SAMEORIGIN
+  Access-Control-Allow-Origin: *
+
+/movies/enter.html
+  Content-Security-Policy: default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; frame-src *; img-src * data:; connect-src *; media-src *;
+  X-Frame-Options: ALLOWALL
