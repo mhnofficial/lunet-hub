@@ -740,7 +740,7 @@
                 });
             }
             if ((await connection.getTransport()) !== "/scram/epoxy.mjs") {
-                await connection.setTransport("/scram/epoxy.mjs", [{ wisp: "wss://anura.pro/wisp/" }]);
+                await connection.setTransport("/scram/epoxy.mjs", [{ wisp: "wss://wisp.mercurywork.shop" }]);
             }
             statusDot.classList.add('online');
             swStatusEl.innerHTML = '<div class="status-dot online"></div> Proxy active';

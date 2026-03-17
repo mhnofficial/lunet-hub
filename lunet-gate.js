@@ -1,38 +1,28 @@
 /**
  * lunet-gate.js
- * Drop this file in your repo root.
- * Import it on games.html and enter/enter.html.
- *
- * Usage:
- *   <script src="../lunet-gate.js"></script>   (from enter/ subfolder)
- *   <script src="lunet-gate.js"></script>       (from root)
- *
- *   LunetGate.init('games')   or   LunetGate.init('movies')
- *
- * Requires: Font Awesome already loaded on the page.
+ * Gating is currently DISABLED — all content is free.
+ * To re-enable, remove the `return;` line inside init().
  */
 
 const LunetGate = (() => {
 
     const AUTH_WORKER   = 'https://lunet-auth.nickygomez-29.workers.dev';
     const FREE_SECONDS  = 20 * 60;
-    const TICK_INTERVAL = 30;   // seconds between server ticks
-    const PREMIUM_PLANS = {
-        games:  ['games',  'bundle', 'cheat'],
-        movies: ['movies', 'bundle', 'cheat'],
-    };
+    const TICK_INTERVAL = 30;
 
-    let gateType      = null;  // 'games' | 'movies'
-    let remaining     = FREE_SECONDS;
-    let timerEl       = null;
-    let overlayEl     = null;
-    let tickTimer     = null;
-    let countdownTimer= null;
-    let isPaused      = false;
-    let isSubscribed  = false;
+    let gateType       = null;
+    let remaining      = FREE_SECONDS;
+    let timerEl        = null;
+    let overlayEl      = null;
+    let tickTimer      = null;
+    let countdownTimer = null;
+    let isPaused       = false;
+    let isSubscribed   = false;
 
     // ── Public init ──────────────────────────────────────────
     async function init(type) {
+        return; // ← GATING DISABLED — remove this line to re-enable
+
         gateType = type;
         injectStyles();
         injectTimerBar();
@@ -87,7 +77,6 @@ const LunetGate = (() => {
 
     // ── Timers ───────────────────────────────────────────────
     function startTimers() {
-        // Countdown every second (client side only for display)
         countdownTimer = setInterval(() => {
             if (isPaused) return;
             remaining = Math.max(0, remaining - 1);
@@ -95,7 +84,6 @@ const LunetGate = (() => {
             if (remaining <= 0) { clearAllTimers(); showLimitOverlay(); }
         }, 1000);
 
-        // Sync with server every 30s
         tickTimer = setInterval(() => {
             if (!isPaused) tickServer();
         }, TICK_INTERVAL * 1000);
@@ -153,7 +141,7 @@ const LunetGate = (() => {
       <div class="lgo-card">
         <div class="lgo-icon">${gateType === 'games' ? '🎮' : '🎬'}</div>
         <h2>Your 20 free minutes are up</h2>
-        <p>You've used your free daily session. Upgrade to play all month, or wait <strong id="lgo-cooldown">30:00</strong> for another free session.</p>
+        <p>Upgrade to keep going, or wait <strong id="lgo-cooldown">30:00</strong> for another free session.</p>
         <div class="lgo-btns">
           <button class="lgo-btn-pay" onclick="LunetGate._goUpgrade('${planKey}')">
             <i class="fa-solid fa-bolt"></i> ${planLabel}
@@ -194,7 +182,6 @@ const LunetGate = (() => {
             const s = diff % 60;
             if (el) el.textContent = `${m}:${String(s).padStart(2,'0')}`;
             if (diff <= 0) {
-                // Cooldown done — reload to give them a fresh session
                 overlayEl.style.display = 'none';
                 remaining = FREE_SECONDS;
                 startTimers();
@@ -207,19 +194,17 @@ const LunetGate = (() => {
         tick();
     }
 
-    // ── Paywall overlay for extended/premium content ──────────
     function showPaywallOverlay(triggerEl) {
         const planLabel = gateType === 'games' ? 'Games Plan — $3/mo' : 'Movies Plan — $5/mo';
         const planKey   = gateType === 'games' ? 'games' : 'movies';
         const title     = triggerEl?.dataset?.title || 'This content';
-
         const pw = document.createElement('div');
         pw.id = 'lunet-paywall';
         pw.innerHTML = `
       <div class="lgo-card">
         <div class="lgo-icon">🔒</div>
         <h2>Premium content</h2>
-        <p><strong>${title}</strong> is part of the extended library. Upgrade to unlock everything.</p>
+        <p><strong>${title}</strong> requires an upgrade to access.</p>
         <div class="lgo-btns">
           <button class="lgo-btn-pay" onclick="LunetGate._goUpgrade('${planKey}')">
             <i class="fa-solid fa-bolt"></i> ${planLabel}
@@ -232,7 +217,6 @@ const LunetGate = (() => {
         document.body.appendChild(pw);
     }
 
-    // ── Content visibility ────────────────────────────────────
     function unlockBasic() {
         document.querySelectorAll('[data-lunet-tier="free"]').forEach(el => el.classList.remove('lunet-locked'));
         document.querySelectorAll('[data-lunet-tier="premium"]').forEach(el => {
@@ -250,11 +234,9 @@ const LunetGate = (() => {
         });
     }
 
-    // ── CSS ───────────────────────────────────────────────────
     function injectStyles() {
         const s = document.createElement('style');
         s.textContent = `
-      /* Timer bar */
       #lunet-timer-bar {
         position: fixed; top: 70px; left: 0; right: 0;
         z-index: 900;
@@ -281,8 +263,6 @@ const LunetGate = (() => {
         transition: all 0.2s;
       }
       .ltb-upgrade:hover { background: rgba(168,85,247,0.3); color: #fff; }
-
-      /* Gate overlay */
       #lunet-gate-overlay, #lunet-paywall {
         position: fixed; inset: 0; z-index: 2000;
         background: rgba(0,0,0,0.85); backdrop-filter: blur(16px);
@@ -318,33 +298,26 @@ const LunetGate = (() => {
         display: flex; align-items: center; justify-content: center; gap: 8px;
       }
       .lgo-btn-wait:hover { border-color: rgba(168,85,247,0.3); color: #fff; }
-
-      /* Premium content lock badge */
-      .lunet-premium-item {
-        position: relative; cursor: pointer;
-      }
+      .lunet-premium-item { position: relative; cursor: pointer; }
       .lunet-premium-item::after {
         content: '🔒 Premium';
         position: absolute; inset: 0;
         background: rgba(9,6,13,0.75); backdrop-filter: blur(3px);
         display: flex; align-items: center; justify-content: center;
         font-size: 0.82rem; font-weight: 600; color: #c084fc;
-        border-radius: inherit;
-        pointer-events: none;
+        border-radius: inherit; pointer-events: none;
       }
     `;
         document.head.appendChild(s);
     }
 
-    // ── Public helpers ────────────────────────────────────────
     function _goUpgrade(plan) {
-        const token = localStorage.getItem('lunet_token');
-        if (!token) { location.href = 'auth.html?redirect=pricing.html'; return; }
+        const tok = localStorage.getItem('lunet_token');
+        if (!tok) { location.href = 'auth.html?redirect=pricing.html'; return; }
         location.href = 'pricing.html';
     }
 
     async function _startCooldownWait() {
-        // Just close the overlay and show the countdown — server already set cooldown on last tick
         const state = await checkWithServer();
         if (state.cooldownEnds) {
             overlayEl.innerHTML = '';
@@ -354,4 +327,4 @@ const LunetGate = (() => {
 
     return { init, showPaywallOverlay, _goUpgrade, _startCooldownWait };
 
-})();
+})();ƒƒ

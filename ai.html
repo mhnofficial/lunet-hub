@@ -42,10 +42,8 @@
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 40px; position: fixed; top: 0; z-index: 1000;
         }
-
         .logo-area { display: flex; align-items: center; gap: 12px; }
         .logo-area h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
-
         .nav-links { list-style: none; display: flex; gap: 5px; }
         .nav-links a {
             display: flex; align-items: center; gap: 8px;
@@ -66,132 +64,74 @@
         }
 
         .header-box {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 100%; max-width: 1000px;
+            display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 20px;
         }
-
         .header-box h2 { font-size: 1.5rem; font-weight: 700; color: #fff; }
 
         #live-clock {
             background: var(--surface);
-            padding: 8px 18px;
-            border-radius: 100px;
-            font-family: monospace;
-            border: 1px solid var(--surface-border);
-            color: var(--primary);
-            font-size: 0.9rem;
+            padding: 8px 18px; border-radius: 100px;
+            font-family: monospace; border: 1px solid var(--surface-border);
+            color: var(--primary); font-size: 0.9rem;
         }
 
-        /* API Key Setup Banner */
+        /* API Key Banner */
         .setup-banner {
-            width: 100%;
-            max-width: 1000px;
+            width: 100%; max-width: 1000px;
             background: rgba(168, 85, 247, 0.08);
             border: 1px solid rgba(168, 85, 247, 0.2);
             border-radius: var(--radius-md);
-            padding: 14px 20px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: var(--transition);
+            padding: 14px 20px; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 12px;
+            font-size: 0.85rem; color: var(--text-muted);
+            cursor: pointer; transition: var(--transition);
         }
         .setup-banner:hover { border-color: var(--primary); color: #fff; }
         .setup-banner i { color: var(--primary); font-size: 1rem; }
-        .setup-banner span { flex: 1; }
-        .setup-banner .key-status { font-size: 0.75rem; padding: 3px 10px; border-radius: 100px; background: rgba(255,255,255,0.05); }
-        .setup-banner .key-status.site { color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
-        .setup-banner .key-status.own { color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+        .setup-banner .key-status {
+            font-size: 0.75rem; padding: 3px 10px; border-radius: 100px;
+            background: rgba(255,255,255,0.05);
+        }
+        .setup-banner .key-status.site { color: #60a5fa; background: rgba(96,165,250,0.1); }
+        .setup-banner .key-status.own  { color: #4ade80; background: rgba(74,222,128,0.1); }
 
         /* Modal */
         .modal-overlay {
-            display: none;
-            position: fixed; inset: 0;
+            display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
-            z-index: 2000;
-            align-items: center; justify-content: center;
+            z-index: 2000; align-items: center; justify-content: center;
         }
         .modal-overlay.open { display: flex; }
         .modal {
             background: #12080f;
-            border: 1px solid rgba(168, 85, 247, 0.3);
+            border: 1px solid rgba(168,85,247,0.3);
             border-radius: var(--radius-lg);
-            padding: 35px;
-            width: 90%;
-            max-width: 560px;
-            max-height: 90vh;
-            overflow-y: auto;
+            padding: 35px; width: 90%; max-width: 500px;
             animation: slideUp 0.3s ease forwards;
         }
         .modal h3 { font-size: 1.2rem; margin-bottom: 8px; }
-        .modal p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+        .modal p  { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
 
-        .key-source-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 22px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--surface-border);
-            border-radius: var(--radius-md);
-            padding: 5px;
-        }
-        .key-tab {
-            flex: 1; padding: 9px; border-radius: 10px;
-            border: none; background: transparent;
-            color: var(--text-muted); font-family: inherit;
-            font-size: 0.82rem; font-weight: 500;
-            cursor: pointer; transition: var(--transition);
-            text-align: center;
-        }
-        .key-tab.active { background: var(--primary); color: white; }
-
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-
-        .site-key-info {
-            background: rgba(96, 165, 250, 0.07);
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            border-radius: var(--radius-md);
-            padding: 16px 18px;
-            font-size: 0.85rem;
-            color: #93c5fd;
-            line-height: 1.7;
-            margin-bottom: 16px;
-        }
-        .site-key-info strong { color: #60a5fa; display: block; margin-bottom: 6px; font-size: 0.9rem; }
-        .site-key-info ul { padding-left: 18px; }
-        .site-key-info ul li { margin-bottom: 3px; }
-
-        .key-field { margin-bottom: 18px; }
+        .key-field { margin-bottom: 20px; }
         .key-field label {
             display: flex; align-items: center; gap: 8px;
             font-size: 0.8rem; font-weight: 600; color: var(--text-muted);
             margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .key-field .key-source-badge {
+        .key-field .badge {
             margin-left: auto; font-size: 0.7rem; padding: 2px 8px;
             border-radius: 100px; text-transform: none; letter-spacing: 0;
         }
-        .key-field .key-source-badge.using-site { background: rgba(96,165,250,0.15); color: #60a5fa; }
-        .key-field .key-source-badge.using-own { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .key-field .badge.saved { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .key-field .badge.site  { background: rgba(96,165,250,0.15); color: #60a5fa; }
         .key-field input {
-            width: 100%;
-            background: rgba(255,255,255,0.04);
+            width: 100%; background: rgba(255,255,255,0.04);
             border: 1px solid var(--surface-border);
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            color: white;
-            font-family: monospace;
-            font-size: 0.85rem;
-            outline: none;
-            transition: var(--transition);
+            padding: 12px 16px; border-radius: var(--radius-md);
+            color: white; font-family: monospace; font-size: 0.85rem;
+            outline: none; transition: var(--transition);
         }
         .key-field input:focus { border-color: var(--primary); background: rgba(255,255,255,0.07); }
         .key-field .hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
@@ -202,7 +142,7 @@
         }
         .key-field .clear-btn:hover { text-decoration: underline; }
 
-        .modal-btns { display: flex; gap: 12px; margin-top: 25px; }
+        .modal-btns { display: flex; gap: 12px; margin-top: 24px; }
         .btn-save {
             flex: 1; background: var(--primary); color: white;
             border: none; padding: 13px; border-radius: var(--radius-md);
@@ -218,209 +158,111 @@
         }
         .btn-cancel:hover { color: #fff; }
 
-        /* Model Selector */
-        .model-toolbar {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        .model-btn {
-            display: flex; align-items: center; gap: 8px;
-            padding: 9px 16px;
-            border-radius: 100px;
-            border: 1px solid var(--surface-border);
-            background: var(--surface);
-            color: var(--text-muted);
-            font-family: inherit;
-            font-size: 0.82rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .model-btn:hover { border-color: var(--primary); color: #fff; }
-        .model-btn.active { border-color: var(--primary); background: rgba(168,85,247,0.15); color: #fff; }
-        .model-btn .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .dot-claude { background: #f97316; }
-        .dot-gemini { background: #4285f4; }
-        .dot-gpt { background: #10b981; }
-
-        /* Chat */
-        .chat-wrapper {
-            flex: 1;
-            width: 100%;
-            max-width: 1000px;
-            background: var(--surface);
-            border: 1px solid var(--surface-border);
-            border-radius: var(--radius-lg);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            min-height: 0;
-        }
-
-        #chat-messages {
-            flex: 1;
-            padding: 25px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            scrollbar-width: none;
-        }
-        #chat-messages::-webkit-scrollbar { display: none; }
-
-        .message {
-            max-width: 82%;
-            padding: 14px 20px;
-            border-radius: 18px;
-            font-size: 0.92rem;
-            line-height: 1.65;
-            animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-
-        .user-msg {
-            align-self: flex-end;
-            background: var(--primary);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .ai-msg {
-            align-self: flex-start;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--surface-border);
-            border-bottom-left-radius: 4px;
-        }
-
-        .ai-msg.thinking { color: var(--text-muted); font-style: italic; }
-
-        .msg-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-            margin-left: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .msg-wrapper { display: flex; flex-direction: column; align-self: flex-start; max-width: 82%; }
-        .msg-wrapper.user-wrapper { align-self: flex-end; }
-
-        .input-area {
-            padding: 20px 25px;
-            background: rgba(0,0,0,0.2);
-            border-top: 1px solid var(--surface-border);
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        #userInput {
-            flex: 1;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--surface-border);
-            padding: 14px 22px;
-            border-radius: 100px;
-            color: white;
-            font-family: inherit;
-            font-size: 0.9rem;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        #userInput:focus {
-            border-color: var(--primary);
-            background: rgba(255,255,255,0.06);
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
-        }
-
-        .send-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            width: 52px; height: 52px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-        .send-btn:hover { transform: scale(1.1) rotate(-10deg); background: var(--secondary); }
-        .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-        /* Credits Bar */
-        .credits-bar {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-            padding: 10px 18px;
-            background: var(--surface);
-            border: 1px solid var(--surface-border);
+        /* Model info chip */
+        .model-chip {
+            width: 100%; max-width: 1000px;
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 16px; margin-bottom: 16px;
+            background: rgba(249,115,22,0.07);
+            border: 1px solid rgba(249,115,22,0.2);
             border-radius: var(--radius-md);
-            font-size: 0.82rem;
-            color: var(--text-muted);
+            font-size: 0.83rem; color: var(--text-muted);
+        }
+        .model-chip .dot { width: 8px; height: 8px; border-radius: 50%; background: #f97316; flex-shrink: 0; }
+        .model-chip strong { color: #fb923c; }
+
+        /* Credits */
+        .credits-bar {
+            width: 100%; max-width: 1000px;
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 16px; padding: 10px 18px;
+            background: var(--surface); border: 1px solid var(--surface-border);
+            border-radius: var(--radius-md);
+            font-size: 0.82rem; color: var(--text-muted);
         }
         .credits-bar.own-key { border-color: rgba(74,222,128,0.2); background: rgba(74,222,128,0.04); }
         .credits-bar.own-key .credits-label { color: #4ade80; }
         .credits-track {
-            flex: 1;
-            height: 5px;
-            background: rgba(255,255,255,0.07);
-            border-radius: 100px;
-            overflow: hidden;
+            flex: 1; height: 5px; background: rgba(255,255,255,0.07);
+            border-radius: 100px; overflow: hidden;
         }
         .credits-fill {
-            height: 100%;
-            border-radius: 100px;
-            background: var(--primary);
+            height: 100%; border-radius: 100px; background: var(--primary);
             transition: width 0.5s ease, background 0.3s ease;
         }
-        .credits-fill.warning { background: #f59e0b; }
+        .credits-fill.warning  { background: #f59e0b; }
         .credits-fill.depleted { background: #ef4444; }
         .credits-label { white-space: nowrap; font-weight: 500; }
 
-        /* Limit reached banner */
+        /* Limit banner */
         .limit-banner {
-            display: none;
-            width: 100%;
-            max-width: 1000px;
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.3);
-            border-radius: var(--radius-md);
-            padding: 14px 20px;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-            color: #fca5a5;
-            gap: 12px;
-            align-items: center;
+            display: none; width: 100%; max-width: 1000px;
+            background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3);
+            border-radius: var(--radius-md); padding: 14px 20px; margin-bottom: 12px;
+            font-size: 0.85rem; color: #fca5a5; gap: 12px; align-items: center;
         }
         .limit-banner.show { display: flex; }
         .limit-banner i { color: #ef4444; flex-shrink: 0; }
         .limit-banner a { color: #f87171; cursor: pointer; text-decoration: underline; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Chat */
+        .chat-wrapper {
+            flex: 1; width: 100%; max-width: 1000px;
+            background: var(--surface); border: 1px solid var(--surface-border);
+            border-radius: var(--radius-lg);
+            display: flex; flex-direction: column;
+            overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            min-height: 0;
         }
+        #chat-messages {
+            flex: 1; padding: 25px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 16px;
+            scrollbar-width: none;
+        }
+        #chat-messages::-webkit-scrollbar { display: none; }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+        .message {
+            max-width: 82%; padding: 14px 20px; border-radius: 18px;
+            font-size: 0.92rem; line-height: 1.65;
+            animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
+        .user-msg { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+        .ai-msg   { align-self: flex-start; background: rgba(255,255,255,0.05); border: 1px solid var(--surface-border); border-bottom-left-radius: 4px; }
+
+        .msg-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; margin-left: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .msg-wrapper { display: flex; flex-direction: column; align-self: flex-start; max-width: 82%; }
+        .msg-wrapper.user-wrapper { align-self: flex-end; }
+
+        .input-area {
+            padding: 20px 25px; background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--surface-border);
+            display: flex; gap: 12px; align-items: center;
+        }
+        #userInput {
+            flex: 1; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--surface-border);
+            padding: 14px 22px; border-radius: 100px;
+            color: white; font-family: inherit; font-size: 0.9rem;
+            outline: none; transition: var(--transition);
+        }
+        #userInput:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); box-shadow: 0 0 20px rgba(168,85,247,0.1); }
+        .send-btn {
+            background: var(--primary); color: white; border: none;
+            width: 52px; height: 52px; border-radius: 50%; cursor: pointer;
+            transition: var(--transition); display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; flex-shrink: 0;
+        }
+        .send-btn:hover { transform: scale(1.1) rotate(-10deg); background: var(--secondary); }
+        .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+        @keyframes slideUp { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
         .thinking { animation: pulse 1.5s infinite; }
 
         @media (max-width: 768px) {
             nav { padding: 0 20px; }
             .nav-links span { display: none; }
             main { padding: 15px 10px 10px; }
-            .setup-banner { font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -428,7 +270,7 @@
 
 <nav>
     <div class="logo-area">
-        <img src="../e.ico" alt="Lunet" width="32" height="32" onerror="this.style.display='none'">
+        <img src="e.ico" alt="Lunet" width="32" height="32" onerror="this.style.display='none'">
         <h1>LUNET</h1>
     </div>
     <ul class="nav-links">
@@ -447,39 +289,32 @@
         <div id="live-clock">00:00:00</div>
     </div>
 
-    <!-- API Key Setup -->
+    <!-- API Key Banner -->
     <div class="setup-banner" onclick="openModal()">
         <i class="fa-solid fa-key"></i>
-        <span>API Keys — use site's free keys or add your own for unlimited</span>
-        <span class="key-status" id="keyStatus">🌐 Site keys</span>
+        <span>Using site's free Groq key — add your own for unlimited (free at console.groq.com)</span>
+        <span class="key-status" id="keyStatus">🌐 Site key</span>
     </div>
 
-    <!-- Credits Bar (hidden when using own key) -->
+    <!-- Credits Bar -->
     <div class="credits-bar" id="creditsBar">
         <span class="credits-label" id="creditsLabel">15 / 15 free messages left today</span>
         <div class="credits-track">
             <div class="credits-fill" id="creditsFill" style="width:100%"></div>
         </div>
-        <span style="font-size:0.75rem; opacity:0.6;">resets daily</span>
+        <span style="font-size:0.75rem;opacity:0.6;">resets daily</span>
     </div>
 
-    <!-- Limit Reached Banner -->
+    <!-- Limit Banner -->
     <div class="limit-banner" id="limitBanner">
         <i class="fa-solid fa-circle-exclamation"></i>
-        <span>You've hit the 15 free messages/day limit. <a onclick="openModal()">Add your own API key</a> to keep chatting unlimited — it's free to get one.</span>
+        <span>You've hit the 15/day limit. <a onclick="openModal()">Add your free Groq key</a> for unlimited messages.</span>
     </div>
 
-    <!-- Model Selector -->
-    <div class="model-toolbar">
-        <button class="model-btn active" data-model="claude" onclick="selectModel(this)">
-            <span class="dot dot-claude"></span> Claude (Anthropic)
-        </button>
-        <button class="model-btn" data-model="gemini" onclick="selectModel(this)">
-            <span class="dot dot-gemini"></span> Gemini (Google)
-        </button>
-        <button class="model-btn" data-model="gpt" onclick="selectModel(this)">
-            <span class="dot dot-gpt"></span> ChatGPT (OpenAI)
-        </button>
+    <!-- Model Chip -->
+    <div class="model-chip">
+        <span class="dot"></span>
+        Powered by <strong>Groq — Llama 3.3 70B</strong>&nbsp;(fastest AI available, totally free)
     </div>
 
     <!-- Chat -->
@@ -487,7 +322,7 @@
         <div id="chat-messages">
             <div class="msg-wrapper">
                 <div class="msg-label">Timothy AI</div>
-                <div class="message ai-msg">Wassup. I'm Timothy AI — 15 free messages a day on the house. Add your own API key anytime for unlimited. Pick a model and let's go.</div>
+                <div class="message ai-msg">Wassup. I'm Timothy AI, running on Groq's Llama 3.3. 15 free messages a day on the house — add your own free Groq key for unlimited. Let's go.</div>
             </div>
         </div>
         <div class="input-area">
@@ -499,83 +334,34 @@
     </div>
 </main>
 
-<!-- API Key Modal -->
+<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-        <h3>🔑 API Key Settings</h3>
-        <p>By default Timothy AI uses the site's built-in keys — totally free, no setup needed. Optionally add your own keys for unlimited personal usage.</p>
+        <h3>Groq API Key</h3>
+        <p>Timothy AI uses the site's free Groq key by default (15 messages/day). Add your own free key from <strong style="color:#fb923c">console.groq.com</strong> for unlimited messages — it takes 30 seconds to get one.</p>
 
-        <div class="key-source-tabs">
-            <button class="key-tab active" onclick="switchTab('site', this)">🌐 Use Site's Keys</button>
-            <button class="key-tab" onclick="switchTab('own', this)">✏️ Use My Own Keys</button>
+        <div class="key-field">
+            <label>
+                Groq API Key
+                <span class="badge" id="badge-groq">Using site key</span>
+            </label>
+            <input type="password" id="groqKey" placeholder="gsk_..." autocomplete="off">
+            <div class="hint">Get your free key at console.groq.com → API Keys → Create new</div>
+            <button class="clear-btn" onclick="clearKey()">✕ Clear saved key</button>
         </div>
 
-        <!-- Site Keys Tab -->
-        <div class="tab-panel active" id="tab-site">
-            <div class="site-key-info">
-                <strong>✅ Site keys are active by default</strong>
-                <ul>
-                    <li>Works immediately — no signup needed</li>
-                    <li>Supports Claude, Gemini, and ChatGPT</li>
-                    <li>15 free messages per day on site keys</li>
-                    <li>Site credits may occasionally run low during high traffic — if you see a credit error, switch models or add your own key</li>
-                </ul>
-            </div>
-            <p style="font-size:0.82rem; color: var(--text-muted);">💡 <strong style="color:#c084fc">Tip:</strong> Gemini (Google) has a very generous free tier — if Claude is down, switch to Gemini. Add your own key for unlimited uninterrupted access.</p>
-        </div>
-
-        <!-- Own Keys Tab -->
-        <div class="tab-panel" id="tab-own">
-            <div class="key-field">
-                <label>
-                    🟠 Anthropic (Claude)
-                    <span class="key-source-badge" id="badge-claude">loading...</span>
-                </label>
-                <input type="password" id="claudeKey" placeholder="sk-ant-api03-..." autocomplete="off">
-                <div class="hint">Get free key at console.anthropic.com</div>
-                <button class="clear-btn" onclick="clearKey('claude')">✕ Clear saved key</button>
-            </div>
-            <div class="key-field">
-                <label>
-                    🔵 Google (Gemini)
-                    <span class="key-source-badge" id="badge-gemini">loading...</span>
-                </label>
-                <input type="password" id="geminiKey" placeholder="AIzaSy..." autocomplete="off">
-                <div class="hint">Get free key at aistudio.google.com</div>
-                <button class="clear-btn" onclick="clearKey('gemini')">✕ Clear saved key</button>
-            </div>
-            <div class="key-field">
-                <label>
-                    🟢 OpenAI (ChatGPT)
-                    <span class="key-source-badge" id="badge-gpt">loading...</span>
-                </label>
-                <input type="password" id="gptKey" placeholder="sk-proj-..." autocomplete="off">
-                <div class="hint">Get key at platform.openai.com</div>
-                <button class="clear-btn" onclick="clearKey('gpt')">✕ Clear saved key</button>
-            </div>
-
-            <div class="modal-btns">
-                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn-save" onclick="saveKeys()">Save My Keys</button>
-            </div>
-        </div>
-
-        <div style="margin-top: 18px; text-align: center;">
-            <button class="btn-cancel" onclick="closeModal()" style="width:100%">Close</button>
+        <div class="modal-btns">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-save" onclick="saveKey()">Save Key</button>
         </div>
     </div>
 </div>
 
 <script>
-    // =============================================
-    // CHANGE THIS to your Worker URL after deploying
-    // Example: https://lunet-ap-ai.nickygomez-29.workers.dev
-    // =============================================
-    const WORKER_URL = 'https://lunet-ap-ai.nickygomez-29.workers.dev';
-
+    const WORKER_URL  = 'https://lunet-ap-ai.nickygomez-29.workers.dev';
     const DAILY_LIMIT = 15;
 
-    // ---- Clock ----
+    // ── Clock ──
     function updateClock() {
         document.getElementById('live-clock').textContent =
             new Date().toLocaleTimeString('en-US', { hour12: false });
@@ -583,148 +369,94 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // ---- Credit tracking (client-side display only — real enforcement is server-side) ----
-    function getTodayKey() {
-        return 'lunet_used_' + new Date().toISOString().slice(0, 10);
-    }
-
-    function getUsed() {
-        return parseInt(localStorage.getItem(getTodayKey()) || '0');
-    }
-
-    function incrementUsed() {
-        const key = getTodayKey();
-        localStorage.setItem(key, String(getUsed() + 1));
-    }
+    // ── Credits ──
+    function getTodayKey() { return 'lunet_used_' + new Date().toISOString().slice(0,10); }
+    function getUsed()     { return parseInt(localStorage.getItem(getTodayKey()) || '0'); }
+    function incUsed()     { localStorage.setItem(getTodayKey(), String(getUsed() + 1)); }
 
     function updateCreditsUI() {
-        const usingOwnKey = ['claude','gemini','gpt'].some(m => localStorage.getItem('lunet_' + m + '_key'));
-        const bar = document.getElementById('creditsBar');
-        const fill = document.getElementById('creditsFill');
-        const label = document.getElementById('creditsLabel');
-        const limitBanner = document.getElementById('limitBanner');
+        const hasOwn = !!localStorage.getItem('lunet_groq_key');
+        const bar    = document.getElementById('creditsBar');
+        const fill   = document.getElementById('creditsFill');
+        const label  = document.getElementById('creditsLabel');
+        const banner = document.getElementById('limitBanner');
 
-        if (usingOwnKey) {
+        if (hasOwn) {
             bar.className = 'credits-bar own-key';
-            label.textContent = '∞ Unlimited — using your own key';
+            label.textContent = '∞ Unlimited — your own Groq key';
             fill.style.width = '100%';
             fill.className = 'credits-fill';
-            limitBanner.classList.remove('show');
+            banner.classList.remove('show');
             return;
         }
 
         bar.className = 'credits-bar';
-        const used = getUsed();
-        const remaining = Math.max(0, DAILY_LIMIT - used);
+        const remaining = Math.max(0, DAILY_LIMIT - getUsed());
         const pct = (remaining / DAILY_LIMIT) * 100;
-
         label.textContent = `${remaining} / ${DAILY_LIMIT} free messages left today`;
         fill.style.width = pct + '%';
-        fill.className = 'credits-fill' + (pct <= 20 ? ' depleted' : pct <= 50 ? ' warning' : '');
-
-        if (remaining === 0) {
-            limitBanner.classList.add('show');
-        } else {
-            limitBanner.classList.remove('show');
-        }
+        fill.className   = 'credits-fill' + (pct <= 20 ? ' depleted' : pct <= 50 ? ' warning' : '');
+        banner.classList.toggle('show', remaining === 0);
     }
     updateCreditsUI();
 
-    // ---- Key Management ----
-    function hasOwnKey(model) {
-        return !!localStorage.getItem('lunet_' + model + '_key');
-    }
-
-    function getOwnKey(model) {
-        return localStorage.getItem('lunet_' + model + '_key') || '';
-    }
-
+    // ── Key ──
     function updateKeyStatus() {
-        const anyOwn = ['claude','gemini','gpt'].some(m => hasOwnKey(m));
-        const el = document.getElementById('keyStatus');
-        if (anyOwn) {
-            el.textContent = '✓ Your keys active';
-            el.className = 'key-status own';
-        } else {
-            el.textContent = '🌐 Site keys';
-            el.className = 'key-status site';
-        }
+        const has = !!localStorage.getItem('lunet_groq_key');
+        const el  = document.getElementById('keyStatus');
+        el.textContent = has ? '✓ Your key active' : '🌐 Site key';
+        el.className   = 'key-status ' + (has ? 'own' : 'site');
         updateCreditsUI();
     }
     updateKeyStatus();
 
-    // ---- Modal ----
     function openModal() {
-        ['claude','gemini','gpt'].forEach(m => {
-            const saved = getOwnKey(m);
-            document.getElementById(m + 'Key').value = saved;
-            const badge = document.getElementById('badge-' + m);
-            badge.textContent = saved ? '✓ Your key saved' : 'Using site key';
-            badge.className = 'key-source-badge ' + (saved ? 'using-own' : 'using-site');
-        });
+        const saved = localStorage.getItem('lunet_groq_key') || '';
+        document.getElementById('groqKey').value = saved;
+        const badge = document.getElementById('badge-groq');
+        badge.textContent = saved ? '✓ Your key saved' : 'Using site key';
+        badge.className   = 'badge ' + (saved ? 'saved' : 'site');
         document.getElementById('modalOverlay').classList.add('open');
     }
+    function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 
-    function closeModal() {
-        document.getElementById('modalOverlay').classList.remove('open');
-    }
-
-    function switchTab(tab, btn) {
-        document.querySelectorAll('.key-tab').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('tab-' + tab).classList.add('active');
-    }
-
-    function clearKey(model) {
-        localStorage.removeItem('lunet_' + model + '_key');
-        document.getElementById(model + 'Key').value = '';
-        const badge = document.getElementById('badge-' + model);
-        badge.textContent = 'Using site key';
-        badge.className = 'key-source-badge using-site';
-        updateKeyStatus();
-        appendSystem('✓ ' + model + ' key cleared — now using site key.');
-    }
-
-    function saveKeys() {
-        let saved = 0;
-        ['claude','gemini','gpt'].forEach(m => {
-            const val = document.getElementById(m + 'Key').value.trim();
-            if (val) { localStorage.setItem('lunet_' + m + '_key', val); saved++; }
-        });
+    function saveKey() {
+        const val = document.getElementById('groqKey').value.trim();
+        if (val) {
+            localStorage.setItem('lunet_groq_key', val);
+            appendSystem('✓ Groq key saved — unlimited messages!');
+        }
         updateKeyStatus();
         closeModal();
-        appendSystem(saved > 0 ? `✓ ${saved} key(s) saved — unlimited messages now!` : '✓ No changes made.');
     }
 
-    document.getElementById('modalOverlay').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
+    function clearKey() {
+        localStorage.removeItem('lunet_groq_key');
+        document.getElementById('groqKey').value = '';
+        document.getElementById('badge-groq').textContent = 'Using site key';
+        document.getElementById('badge-groq').className   = 'badge site';
+        updateKeyStatus();
+        appendSystem('✓ Key cleared — now using site key.');
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeModal();
     });
 
-    // ---- Model Selection ----
-    let currentModel = 'claude';
-
-    function selectModel(btn) {
-        document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentModel = btn.dataset.model;
-    }
-
-    // ---- Chat ----
-    const chatMessages = document.getElementById('chat-messages');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
+    // ── Chat ──
+    const chatMessages       = document.getElementById('chat-messages');
+    const userInput          = document.getElementById('userInput');
+    const sendBtn            = document.getElementById('sendBtn');
     const conversationHistory = [];
 
     async function sendMessage() {
         const text = userInput.value.trim();
         if (!text) return;
 
-        // Client-side limit check (UX only — server enforces the real limit)
-        const usingOwnKey = hasOwnKey(currentModel);
-        if (!usingOwnKey && getUsed() >= DAILY_LIMIT) {
+        const hasOwn = !!localStorage.getItem('lunet_groq_key');
+        if (!hasOwn && getUsed() >= DAILY_LIMIT) {
             document.getElementById('limitBanner').classList.add('show');
-            appendSystem('⚠️ Daily limit reached. Add your own API key to keep going!');
+            appendSystem('⚠️ Daily limit reached. Add your free Groq key to keep going!');
             return;
         }
 
@@ -733,71 +465,55 @@
         sendBtn.disabled = true;
         conversationHistory.push({ role: 'user', content: text });
 
-        const loadingId = 'msg-' + Date.now();
-        appendAIMessage('Thinking...', loadingId, true);
+        const loadId = 'msg-' + Date.now();
+        appendAIMessage('Thinking...', loadId, true);
 
         try {
             const res = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    model: currentModel,
                     messages: conversationHistory,
-                    // Send own key if the user has one — Worker will use it instead of site key
-                    userKey: getOwnKey(currentModel)
+                    userKey: localStorage.getItem('lunet_groq_key') || ''
                 })
             });
 
             const data = await res.json();
+            const el   = document.getElementById(loadId);
 
             if (res.status === 429 && data.error === 'limit_reached') {
-                // Server confirmed daily limit hit
-                document.getElementById(loadingId).textContent = data.message;
-                document.getElementById(loadingId).classList.remove('thinking');
+                el.textContent = data.message;
+                el.classList.remove('thinking');
                 document.getElementById('limitBanner').classList.add('show');
                 conversationHistory.pop();
             } else if (!res.ok) {
-                // Friendly error messages instead of raw API errors
-                const rawError = data.error || '';
-                let friendlyMsg = "";
-
-                if (rawError.toLowerCase().includes('credit') || rawError.toLowerCase().includes('billing') || rawError.toLowerCase().includes('balance')) {
-                    if (usingOwnKey) {
-                        friendlyMsg = "💳 Your API key is out of credits. Top up at the provider billing page, or switch to a different model.";
-                    } else {
-                        friendlyMsg = "😅 The site free credits are running low right now. Add your own API key (free to get one) to keep chatting without interruption.";
-                        openModal();
-                    }
-                } else if (rawError.toLowerCase().includes('rate') || rawError.toLowerCase().includes('429')) {
-                    friendlyMsg = "⏳ Too many requests right now — wait a few seconds and try again.";
-                } else if (rawError.toLowerCase().includes('invalid') && rawError.toLowerCase().includes('key')) {
-                    friendlyMsg = "🔑 Invalid API key. Double-check your key in settings.";
-                } else if (rawError.toLowerCase().includes('quota')) {
-                    friendlyMsg = "📊 API quota exceeded. Try again tomorrow or add your own key.";
+                const raw = data.error || '';
+                let msg = '';
+                if (raw.toLowerCase().includes('credit') || raw.toLowerCase().includes('billing')) {
+                    msg = hasOwn
+                        ? '💳 Your Groq key is out of credits. Check console.groq.com.'
+                        : '😅 Site Groq credits are low right now. Add your own free key at console.groq.com.';
+                } else if (raw.toLowerCase().includes('rate') || raw.includes('429')) {
+                    msg = '⏳ Too many requests — wait a moment and try again.';
+                } else if (raw.toLowerCase().includes('invalid')) {
+                    msg = '🔑 Invalid Groq key. Double-check it at console.groq.com.';
                 } else {
-                    friendlyMsg = '⚠️ Something went wrong: ' + rawError;
+                    msg = '⚠️ Error: ' + raw;
                 }
-
-                document.getElementById(loadingId).textContent = friendlyMsg;
-                document.getElementById(loadingId).classList.remove('thinking');
+                el.textContent = msg;
+                el.classList.remove('thinking');
                 conversationHistory.pop();
             } else {
-                // Success
-                if (!usingOwnKey) incrementUsed();
+                if (!hasOwn) incUsed();
                 updateCreditsUI();
                 conversationHistory.push({ role: 'assistant', content: data.reply });
-                document.getElementById(loadingId).textContent = data.reply;
-                document.getElementById(loadingId).classList.remove('thinking');
+                el.textContent = data.reply;
+                el.classList.remove('thinking');
             }
 
-        } catch (err) {
-            // Network / fetch failure
-            const el = document.getElementById(loadingId);
-            if (err.message.includes('fetch') || err.message.includes('network') || err.message.includes('Failed')) {
-                el.textContent = '📡 Could not reach the server. Check your connection and try again.';
-            } else {
-                el.textContent = '⚠️ ' + err.message;
-            }
+        } catch(err) {
+            const el = document.getElementById(loadId);
+            el.textContent = '📡 Could not reach the server. Check your connection.';
             el.classList.remove('thinking');
             conversationHistory.pop();
         }
@@ -806,20 +522,17 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // ---- UI Helpers ----
-    const modelNames = { claude: 'Claude', gemini: 'Gemini', gpt: 'ChatGPT' };
-
     function appendMessage(role, text) {
         const wrapper = document.createElement('div');
         wrapper.className = `msg-wrapper ${role === 'user' ? 'user-wrapper' : ''}`;
         if (role !== 'user') {
-            const label = document.createElement('div');
-            label.className = 'msg-label';
-            label.textContent = 'Timothy / ' + modelNames[currentModel] + (hasOwnKey(currentModel) ? ' (your key)' : ' (site key)');
-            wrapper.appendChild(label);
+            const lbl = document.createElement('div');
+            lbl.className   = 'msg-label';
+            lbl.textContent = 'Timothy AI';
+            wrapper.appendChild(lbl);
         }
         const msg = document.createElement('div');
-        msg.className = `message ${role === 'user' ? 'user-msg' : 'ai-msg'}`;
+        msg.className   = `message ${role === 'user' ? 'user-msg' : 'ai-msg'}`;
         msg.textContent = text;
         wrapper.appendChild(msg);
         chatMessages.appendChild(wrapper);
@@ -829,13 +542,13 @@
     function appendAIMessage(text, id, isThinking = false) {
         const wrapper = document.createElement('div');
         wrapper.className = 'msg-wrapper';
-        const label = document.createElement('div');
-        label.className = 'msg-label';
-        label.textContent = 'Timothy / ' + modelNames[currentModel] + (hasOwnKey(currentModel) ? ' (your key)' : ' (site key)');
-        wrapper.appendChild(label);
+        const lbl = document.createElement('div');
+        lbl.className   = 'msg-label';
+        lbl.textContent = 'Timothy AI';
+        wrapper.appendChild(lbl);
         const msg = document.createElement('div');
-        msg.className = `message ai-msg${isThinking ? ' thinking' : ''}`;
-        msg.id = id;
+        msg.className   = `message ai-msg${isThinking ? ' thinking' : ''}`;
+        msg.id          = id;
         msg.textContent = text;
         wrapper.appendChild(msg);
         chatMessages.appendChild(wrapper);
@@ -845,12 +558,12 @@
     function appendSystem(text) {
         const msg = document.createElement('div');
         msg.style.cssText = 'text-align:center;font-size:0.78rem;color:#94a3b8;padding:4px 0;';
-        msg.textContent = text;
+        msg.textContent   = text;
         chatMessages.appendChild(msg);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    userInput.addEventListener('keypress', (e) => {
+    userInput.addEventListener('keypress', e => {
         if (e.key === 'Enter' && !sendBtn.disabled) sendMessage();
     });
 </script>
